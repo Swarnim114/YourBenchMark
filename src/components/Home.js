@@ -13,7 +13,7 @@ import NumbersIcon from '@mui/icons-material/Numbers'; // For NumberMemory
 import TextFieldsIcon from '@mui/icons-material/TextFields'; // For VerbalMemory
 
 const HomeContainer = styled(Box)(({ theme }) => ({
-  
+
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -57,8 +57,8 @@ const Home = () => {
     tiltRefs.current.forEach(ref => {
       if (ref) {
         VanillaTilt.init(ref, {
-          max: 20,
-          speed: 300,
+          max: 10,
+          speed: 200,
           glare: true,
           'max-glare': 0.3,
         });

@@ -29,7 +29,7 @@ const Logo = styled(Typography)(({ theme }) => ({
   flexGrow: 1,
   fontWeight: 'bold',
   fontSize: '2rem',
-  color:"white",
+  color: 'white',
   letterSpacing: '2px',
   fontFamily: 'Pacifico, cursive',
 }));
@@ -54,9 +54,12 @@ const Navbar = () => {
           <Logo variant="h6">HUMAN BENCHMARK</Logo>
           <div>
             <StyledButton component={Link} to="/reaction-time">Reaction Time</StyledButton>
-            <StyledButton component={Link} to="/memory-test">Memory Test</StyledButton>
-            <StyledButton component={Link} to="/typing-test">Typing Test</StyledButton>
-            <StyledButton component={Link} to="/visual-memory-test">Visual Memory Test</StyledButton>
+
+            <StyledButton component={Link} to="/typing-test">Typing </StyledButton>
+            <StyledButton component={Link} to="/visual-memory-test">Visual Memory </StyledButton>
+            <StyledButton component={Link} to="/sequence-memory">Sequence Memory</StyledButton>
+            <StyledButton component={Link} to="/number-memory">Number Memory</StyledButton>
+            <StyledButton component={Link} to="/verbal-memory">Verbal Memory</StyledButton>
           </div>
         </Toolbar>
       </StyledAppBar>
