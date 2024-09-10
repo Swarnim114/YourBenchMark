@@ -58,7 +58,7 @@ const InfoBox = styled('div')({
   transition: 'transform 0.3s ease, background-color 0.3s ease',
   '&:hover': {
     transform: 'scale(1.05)', // Slight scaling on hover
-    backgroundColor: "#b9d5f9", // Light grey background on hover
+    backgroundColor: "#e5d6f9", // Light grey background on hover
   },
 });
 
