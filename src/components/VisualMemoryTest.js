@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Typography, TextField, LinearProgress, Container, Grid, useMediaQuery } from '@mui/material';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link } from '@mui/material';
-import statsimg from "../assets/voilet.png";
-
+import { Box, Button, Typography, Container, Grid } from '@mui/material';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
@@ -19,131 +16,144 @@ const theme = createTheme({
     },
   },
 });
-const isTablet = window.innerWidth <= 768; // Define the 'isTablet' variable based on the window width
-const isMobile = window.innerWidth <= 480; // Define the 'isMobile' variable based on the window width
-const InfoSection = styled('div')({
-  display: 'flex',
-  flexDirection: isTablet ? 'column' : 'row',
-  justifyContent: 'center',
-  alignItems: 'center',
-  marginTop: '50px',
-});
-
-const InfoBox = styled('div')(({ theme }) => ({
-  display: "block",
-  width: isMobile ? '90%' : isTablet ? '80%' : '500px',
-  padding: '20px',
-  backgroundColor: 'white',
-  borderRadius: '8px',
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-  margin: isTablet ? '20px 0' : '0 20px',
-  textAlign: 'left',
-  transition: 'transform 0.3s ease',
-  position: 'relative',
-  overflow: 'hidden',
-  '&:hover': {
-    transform: 'scale(1.05)',
-  },
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "#e5d6f9",
-    borderRadius: '8px',
-    opacity: 0,
-    transition: 'opacity 0.3s ease',
-    zIndex: -1,
-  },
-  '&:hover::before': {
-    opacity: 1,
-  },
-}));
 
 function VisualMemoryTest() {
-  const [grid, setGrid] = useState(Array(9).fill(false));
-  const [highlighted, setHighlighted] = useState([]);
-  const [stage, setStage] = useState('ready'); // 'ready', 'memorizing', 'input'
+  const [level, setLevel] = useState(1); // Starting at level 1
+  const [gridSize, setGridSize] = useState(3); // Default to 3x3 grid
+  const [grid, setGrid] = useState(Array(gridSize * gridSize).fill(false));
+  const [highlighted, setHighlighted] = useState([]); // Store highlighted squares
+  const [stage, setStage] = useState('start'); // 'start', 'memorizing', 'input', 'failed'
+  const [correctSelections, setCorrectSelections] = useState([]); // User selections
+  const [message, setMessage] = useState('');
 
-  const generateGrid = () => {
-    const newGrid = [...grid];
-    const indices = [Math.floor(Math.random() * 9), Math.floor(Math.random() * 9)];
-    indices.forEach((index) => {
-      newGrid[index] = true;
-    });
-    setHighlighted(indices);
-    setGrid(newGrid);
+  useEffect(() => {
+    // Adjust grid size based on the level
+    if (level >= 1 && level <= 3) {
+      setGridSize(3); // 3x3 grid
+    } else if (level >= 4 && level <= 8) {
+      setGridSize(4); // 4x4 grid
+    } else if (level >= 9 && level <= 15) {
+      setGridSize(5); // 5x5 grid
+    } else {
+      setGridSize(6); // 6x6 grid for levels above 15
+    }
+  }, [level]);
+
+  useEffect(() => {
+    // Reset the grid whenever the level or gridSize changes
+    setGrid(Array(gridSize * gridSize).fill(false));
+  }, [gridSize]);
+
+  const startGame = () => {
     setStage('memorizing');
-    setTimeout(() => {
-      setGrid(Array(9).fill(false));
-      setStage('input');
-    }, 2000); // Show for 2 seconds
+    generateHighlightedSquares();
   };
 
-  const checkAnswer = (index) => {
-    if (highlighted.includes(index)) {
-      alert('Correct!');
-    } else {
-      alert('Wrong!');
+  const generateHighlightedSquares = () => {
+    const newHighlighted = [];
+    while (newHighlighted.length < level) {
+      const randomIndex = Math.floor(Math.random() * gridSize * gridSize);
+      if (!newHighlighted.includes(randomIndex)) {
+        newHighlighted.push(randomIndex); // No duplicate indices
+      }
     }
-    setStage('ready');
+    setHighlighted(newHighlighted);
+    setGrid((prevGrid) =>
+      prevGrid.map((_, index) => newHighlighted.includes(index))
+    );
+    setTimeout(() => {
+      setGrid(Array(gridSize * gridSize).fill(false));
+      setStage('input');
+    }, 2000);
+  };
+
+  const handleSquareClick = (index) => {
+    if (stage === 'input') {
+      const isCorrect = highlighted.includes(index);
+      setCorrectSelections([...correctSelections, index]);
+      setGrid((prevGrid) =>
+        prevGrid.map((val, i) => (i === index ? isCorrect : val))
+      );
+    }
+  };
+
+  useEffect(() => {
+    // Check if all selections have been made and validate
+    if (stage === 'input' && correctSelections.length === highlighted.length) {
+      const isCorrect = highlighted.every((index) =>
+        correctSelections.includes(index)
+      );
+      if (isCorrect) {
+        setMessage('Correct! Moving to next level.');
+        setTimeout(() => {
+          setLevel((prevLevel) => prevLevel + 1); // Move to next level
+          setCorrectSelections([]);
+          setHighlighted([]);
+          setMessage('');
+          setStage('memorizing'); // Automatically start the next level
+        }, 1000);
+      } else {
+        setMessage('Incorrect! Try again.');
+        setTimeout(() => {
+          setStage('failed'); // Show "Play Again" button on failure
+        }, 1000);
+      }
+    }
+  }, [correctSelections, highlighted, stage]);
+
+  useEffect(() => {
+    // Automatically start the game if in memorizing stage
+    if (stage === 'memorizing' && !highlighted.length) {
+      generateHighlightedSquares();
+    }
+  }, [stage, highlighted]);
+
+  const resetGame = () => {
+    setLevel(1);
+    setCorrectSelections([]);
+    setHighlighted([]);
+    setMessage('');
+    setStage('start');
   };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      <h2>Visual Memory Test</h2>
-      {stage === 'ready' ? (
-        <Button variant="contained" onClick={generateGrid}>Start Test</Button>
-      ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 100px)', gap: '10px' }}>
-          {grid.map((active, index) => (
-            <div
-              key={index}
-              onClick={() => stage === 'input' && checkAnswer(index)}
-              style={{
-                width: '100px',
-                height: '100px',
-                backgroundColor: active ? 'blue' : 'grey',
-              }}
-            />
+    <ThemeProvider theme={theme}>
+      <Container maxWidth="lg" sx={{ backgroundColor: theme.palette.background.default, padding: '20px' }}>
+        <Typography variant="h4" gutterBottom>
+          Visual Memory Test - Level {level}
+        </Typography>
+        {message && (
+          <Typography variant="h6" gutterBottom color="secondary">
+            {message}
+          </Typography>
+        )}
+        {stage === 'start' && (
+          <Button variant="contained" color="primary" onClick={startGame}>
+            Start Game
+          </Button>
+        )}
+        {stage === 'failed' && (
+          <Button variant="contained" color="secondary" onClick={resetGame}>
+            Play Again
+          </Button>
+        )}
+        <Grid container spacing={2} sx={{ marginTop: '20px' }}>
+          {grid.map((square, index) => (
+            <Grid item key={index} xs={12 / gridSize}>
+              <Box
+                sx={{
+                  width: '100%',
+                  height: '100px',
+                  backgroundColor: square ? theme.palette.secondary.main : theme.palette.primary.main,
+                  cursor: 'pointer',
+                }}
+                onClick={() => handleSquareClick(index)}
+              />
+            </Grid>
           ))}
-        </div>
-      )}
-      <InfoSection>
-        <InfoBox>
-          <Typography variant="h6" gutterBottom>Statistics</Typography>
-          <img src={statsimg} alt="Statistics" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }} />
-        </InfoBox>
-        <InfoBox sx={{minHeight: '400px '}}>
-          <Typography variant="h6" gutterBottom>About the test</Typography>
-          <Typography paragraph>
-            The average person can only remember 7 digit numbers reliably, but it's possible to do much better using mnemonic techniques. Some helpful links are provided below.
-          </Typography>
-          <Typography component="div">
-            <Link style={{ color: '#7f60d4' }} href="https://en.wikipedia.org/wiki/Katapayadi_system" target="_blank" rel="noopener noreferrer">
-              Katapayadi system
-            </Link>
-          </Typography>
-          <Typography component="div">
-            <Link style={{ color: '#7f60d4' }} href="https://en.wikipedia.org/wiki/Mnemonic_major_system" target="_blank" rel="noopener noreferrer">
-              Mnemonic major system
-            </Link>
-          </Typography>
-          <Typography component="div">
-            <Link style={{ color: '#7f60d4' }} href="https://en.wikipedia.org/wiki/Dominic_system" target="_blank" rel="noopener noreferrer">
-              Dominic system
-            </Link>
-          </Typography>
-          <Typography component="div">
-            <Link style={{ color: '#7f60d4' }} href="https://en.wikipedia.org/wiki/Katapayadi_system" target="_blank" rel="noopener noreferrer">
-              Katapayadi system
-            </Link>
-          </Typography>
-        </InfoBox>
-      </InfoSection>
-    </div>
+        </Grid>
+      </Container>
+    </ThemeProvider>
   );
 }
 

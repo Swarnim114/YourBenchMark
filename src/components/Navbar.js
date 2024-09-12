@@ -55,9 +55,9 @@ const Navbar = () => {
           <div>
             <StyledButton component={Link} to="/reaction-time">Reaction Time</StyledButton>
 
-            
-            <StyledButton component={Link} to="/visual-memory-test">Visual Memory </StyledButton>
-            <StyledButton component={Link} to="/sequence-memory">Sequence Memory</StyledButton>
+
+            {/* <StyledButton component={Link} to="/visual-memory-test">Visual Memory </StyledButton>
+            <StyledButton component={Link} to="/sequence-memory">Sequence Memory</StyledButton> */}
             <StyledButton component={Link} to="/number-memory">Number Memory</StyledButton>
             <StyledButton component={Link} to="/verbal-memory">Verbal Memory</StyledButton>
           </div>
