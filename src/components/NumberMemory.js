@@ -1,7 +1,104 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Button, Typography, TextField, LinearProgress, Link, useMediaQuery } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import statsimg from "../assets/voilet.png"
+import { Box, Button, Typography, TextField, LinearProgress, Container, Grid, useMediaQuery } from '@mui/material';
+import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
+import { Link } from '@mui/material';
+import statsimg from "../assets/voilet.png";
+
+// Custom theme with purple palette (same as VerbalMemory)
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#7f60d4',
+    },
+    secondary: {
+      main: '#5e45a0',
+    },
+    background: {
+      default: '#f5f3ff',
+      paper: '#ffffff',
+    },
+  },
+});
+
+
+
+const GameButton = styled(Button)(({ theme }) => ({
+  margin: theme.spacing(1),
+  padding: theme.spacing(1, 4),
+  borderRadius: 25,
+  fontWeight: 'bold',
+  transition: 'all 0.3s',
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: '0 4px 12px rgba(127, 96, 212, 0.2)',
+  },
+}));
+
+const NumberDisplay = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  color: theme.palette.primary.main,
+  marginBottom: theme.spacing(3),
+  userSelect: 'none',
+}));
+
+const LevelDisplay = styled(Typography)(({ theme }) => ({
+  fontWeight: 'bold',
+  color: theme.palette.secondary.main,
+  marginTop: theme.spacing(2),
+}));
+
+const InfoSection = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  [theme.breakpoints.up('md')]: {
+    flexDirection: 'row',
+  },
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginTop: '50px',
+}));
+
+const InfoBox = styled('div')(({ theme }) => ({
+  display: "block",
+  width: '90%',
+  [theme.breakpoints.up('sm')]: {
+    width: '80%',
+  },
+  [theme.breakpoints.up('md')]: {
+    width: '500px',
+  },
+  padding: '20px',
+  backgroundColor: 'white',
+  borderRadius: '8px',
+  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+  margin: '20px 0',
+  [theme.breakpoints.up('md')]: {
+    margin: '0 20px',
+  },
+  textAlign: 'left',
+  transition: 'transform 0.3s ease',
+  position: 'relative',
+  overflow: 'hidden',
+  '&:hover': {
+    transform: 'scale(1.05)',
+  },
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "#e5d6f9",
+    borderRadius: '8px',
+    opacity: 0,
+    transition: 'opacity 0.3s ease',
+    zIndex: -1,
+  },
+  '&:hover::before': {
+    opacity: 1,
+  },
+}));
 
 const NumberMemory = () => {
   const [level, setLevel] = useState(1);
@@ -144,112 +241,114 @@ const NumberMemory = () => {
   };
 
   return (
-    <Box sx={{ textAlign: 'center', mt: 5, userSelect: 'none', px: 2 }}>
-      {!testOver ? (
-        <>
-          <Typography variant={isMobile ? "h3" : "h2"} gutterBottom>
-            Number Memory
-          </Typography>
-          <Typography variant={isMobile ? "subtitle1" : "h6"} gutterBottom>
-            {correct ? `Level ${level}` : 'Incorrect, try again!'}
-          </Typography>
-
-          {showNumber ? (
-            <>
-              <Typography variant={isMobile ? "h4" : "h3"} gutterBottom sx={{ userSelect: 'none' }}>
-                {number}
-              </Typography>
-              <LinearProgress
-                variant="determinate"
-                value={progress}
-                sx={{ width: isMobile ? '80%' : '50%', margin: '20px auto', height: 10 }}
-              />
-            </>
-          ) : (
-            <>
-              {testStarted && (
-                <Box>
-                  <Typography variant={isMobile ? "h6" : "h5"} gutterBottom>
-                    What was the number?
+    <ThemeProvider theme={theme}>
+      <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', py: 4 }}>
+        <Container maxWidth="sm">
+          <Box>
+            <Box sx={{ textAlign: 'center', py: 4 }}>
+              {!testOver ? (
+                <>
+                  <Typography variant="h3" gutterBottom fontWeight="bold" color="primary">
+                    Number Memory
                   </Typography>
-                  <TextField
-                    value={userInput}
-                    onChange={(e) => setUserInput(e.target.value)}
-                    variant="outlined"
-                    placeholder="Enter the number"
-                    inputProps={{
-                      style: {
-                        textAlign: 'center',
-                        fontSize: isMobile ? '18px' : '24px'
-                      },
-                      autoFocus: true
-                    }}
-                    sx={{ mt: 2, width: isMobile ? '80%' : 'auto' }}
-                  />
-                  <Box sx={{ mt: 2 }}>
-                    <Button variant="contained" onClick={handleSubmit} sx={buttonStyle}>
-                      Submit
-                    </Button>
-                  </Box>
-                </Box>
-              )}
-            </>
-          )}
-        </>
-      ) : (
-        <>
-          <Typography variant={isMobile ? "h5" : "h4"} gutterBottom>
-            Test Over!
-          </Typography>
-          <Typography variant={isMobile ? "h6" : "h5"}>
-            You reached Level {level}
-          </Typography>
-          <Button variant="contained" onClick={restartTest} sx={{ ...buttonStyle, mt: 2 }}>
-            Restart
-          </Button>
-        </>
-      )}
+                  <LevelDisplay variant="h6" gutterBottom>
+                    {correct ? `Level ${level}` : 'Incorrect, try again!'}
+                  </LevelDisplay>
 
-      {!showNumber && !testOver && !testStarted && (
-        <Box sx={{ mt: 4 }}>
-          <Button variant="contained" onClick={() => startTest(level)} sx={buttonStyle}>
-            Start
-          </Button>
-        </Box>
-      )}
-      <InfoSection>
-        <InfoBox>
-          <Typography variant="h6" gutterBottom>Statistics</Typography>
-          <img src={statsimg} alt="Statistics" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }} />
-        </InfoBox>
-        <InfoBox>
-          <Typography variant="h6" gutterBottom>About the test</Typography>
-          <Typography paragraph>
-            The average person can only remember 7 digit numbers reliably, but it's possible to do much better using mnemonic techniques. Some helpful links are provided below.
-          </Typography>
-          <Typography component="div">
-            <Link style={{ color: '#7f60d4' }} href="https://en.wikipedia.org/wiki/Katapayadi_system" target="_blank" rel="noopener noreferrer">
-              Katapayadi system
-            </Link>
-          </Typography>
-          <Typography component="div">
-            <Link style={{ color: '#7f60d4' }} href="https://en.wikipedia.org/wiki/Mnemonic_major_system" target="_blank" rel="noopener noreferrer">
-              Mnemonic major system
-            </Link>
-          </Typography>
-          <Typography component="div">
-            <Link style={{ color: '#7f60d4' }} href="https://en.wikipedia.org/wiki/Dominic_system" target="_blank" rel="noopener noreferrer">
-              Dominic system
-            </Link>
-          </Typography>
-          <Typography component="div">
-            <Link style={{ color: '#7f60d4' }} href="https://en.wikipedia.org/wiki/Katapayadi_system" target="_blank" rel="noopener noreferrer">
-              Katapayadi system
-            </Link>
-          </Typography>
-        </InfoBox>
-      </InfoSection>
-    </Box>
+                  {showNumber ? (
+                    <>
+                      <NumberDisplay variant="h3" gutterBottom>
+                        {number}
+                      </NumberDisplay>
+                      <LinearProgress
+                        variant="determinate"
+                        value={progress}
+                        sx={{ width: '80%', margin: '20px auto', height: 10 }}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      {testStarted && (
+                        <Grid container direction="column" spacing={2}>
+                          <Grid item>
+                            <Typography variant="h5" gutterBottom>
+                              What was the number?
+                            </Typography>
+                          </Grid>
+                          <Grid item>
+                            <TextField
+                              value={userInput}
+                              onChange={(e) => setUserInput(e.target.value)}
+                              variant="outlined"
+                              placeholder="Enter the number"
+                              inputProps={{
+                                style: { textAlign: 'center', fontSize: '24px' },
+                                autoFocus: true
+                              }}
+                            />
+                          </Grid>
+                          <Grid item>
+                            <GameButton variant="contained" color="primary" onClick={handleSubmit}>
+                              Submit
+                            </GameButton>
+                          </Grid>
+                        </Grid>
+                      )}
+                    </>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Typography variant="h4" gutterBottom fontWeight="bold" color="primary">
+                    Test Over!
+                  </Typography>
+                  <Typography variant="h5">
+                    You reached Level {level}
+                  </Typography>
+                  <GameButton variant="contained" color="primary" onClick={restartTest} sx={{ mt: 2 }}>
+                    Restart
+                  </GameButton>
+                </>
+              )}
+
+              {!showNumber && !testOver && !testStarted && (
+                <GameButton variant="contained" color="primary" onClick={() => startTest(level)} size="large">
+                  Start Game
+                </GameButton>
+              )}
+            </Box>
+          </Box>
+        </Container>
+
+        <InfoSection sx={{ marginTop: '210px' }}>
+          <InfoBox>
+            <Typography variant="h6" gutterBottom>Statistics</Typography>
+            <img src={statsimg} alt="Statistics" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }} />
+          </InfoBox>
+          <InfoBox sx={{minHeight: '400px '}}>
+            <Typography variant="h6" gutterBottom>About the test</Typography>
+            <Typography paragraph>
+              The average person can only remember 7 digit numbers reliably, but it's possible to do much better using mnemonic techniques. Some helpful links are provided below.
+            </Typography>
+            <Typography component="div">
+              <Link href="https://en.wikipedia.org/wiki/Katapayadi_system" target="_blank" rel="noopener noreferrer" sx={{ color: 'primary.main' }}>
+                Katapayadi system
+              </Link>
+            </Typography>
+            <Typography component="div">
+              <Link href="https://en.wikipedia.org/wiki/Mnemonic_major_system" target="_blank" rel="noopener noreferrer" sx={{ color: 'primary.main' }}>
+                Mnemonic major system
+              </Link>
+            </Typography>
+            <Typography component="div">
+              <Link href="https://en.wikipedia.org/wiki/Dominic_system" target="_blank" rel="noopener noreferrer" sx={{ color: 'primary.main' }}>
+                Dominic system
+              </Link>
+            </Typography>
+          </InfoBox>
+        </InfoSection>
+      </Box>
+    </ThemeProvider>
   );
 };
 
