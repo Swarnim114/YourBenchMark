@@ -36,7 +36,7 @@ const infoSectionStyles = {
 // Individual box style with a minimum size of 400x400
 const infoBoxStyles = {
   display: 'block',
-  minWidth: '400px',
+  minWidth: '375px',
   minHeight: '400px',
   width: isMobile ? '90%' : '45%', // Full width on mobile, 45% width for larger screens
   padding: '20px',
@@ -48,7 +48,7 @@ const infoBoxStyles = {
   transition: 'transform 0.3s ease',
   position: 'relative',
   overflow: 'hidden',
-  maxWidth: '450px',
+  maxWidth: '400px',
 
   '&:hover': {
     transform: 'scale(1.05)',
