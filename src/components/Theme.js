@@ -48,7 +48,7 @@ const infoBoxStyles = {
   transition: 'transform 0.3s ease',
   position: 'relative',
   overflow: 'hidden',
-  maxWidth: '400px',
+  maxWidth: '375px',
 
   '&:hover': {
     transform: 'scale(1.05)',
