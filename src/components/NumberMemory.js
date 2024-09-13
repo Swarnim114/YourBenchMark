@@ -3,36 +3,11 @@ import { Box, Button, Typography, TextField, LinearProgress, Container, Grid, us
 import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
 import { Link } from '@mui/material';
 import statsimg from "../assets/voilet.png";
+import { theme, infoSectionStyles, infoBoxStyles, gameButtonStyles } from './Theme';
 
-// Custom theme with purple palette (same as VerbalMemory)
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#7f60d4',
-    },
-    secondary: {
-      main: '#5e45a0',
-    },
-    background: {
-      default: '#f5f3ff',
-      paper: '#ffffff',
-    },
-  },
-});
-
-
-
-const GameButton = styled(Button)(({ theme }) => ({
-  margin: theme.spacing(1),
-  padding: theme.spacing(1, 4),
-  borderRadius: 25,
-  fontWeight: 'bold',
-  transition: 'all 0.3s',
-  '&:hover': {
-    transform: 'translateY(-2px)',
-    boxShadow: '0 4px 12px rgba(127, 96, 212, 0.2)',
-  },
-}));
+const InfoSection = styled('div')(infoSectionStyles);
+const InfoBox = styled('div')(infoBoxStyles);
+const GameButton = styled(Button)(gameButtonStyles);
 
 const NumberDisplay = styled(Typography)(({ theme }) => ({
   fontWeight: 'bold',
@@ -47,58 +22,7 @@ const LevelDisplay = styled(Typography)(({ theme }) => ({
   marginTop: theme.spacing(2),
 }));
 
-const InfoSection = styled('div')(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  [theme.breakpoints.up('md')]: {
-    flexDirection: 'row',
-  },
-  justifyContent: 'center',
-  alignItems: 'center',
-  marginTop: '50px',
-}));
 
-const InfoBox = styled('div')(({ theme }) => ({
-  display: "block",
-  width: '90%',
-  [theme.breakpoints.up('sm')]: {
-    width: '80%',
-  },
-  [theme.breakpoints.up('md')]: {
-    width: '500px',
-  },
-  padding: '20px',
-  backgroundColor: 'white',
-  borderRadius: '8px',
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-  margin: '20px 0',
-  [theme.breakpoints.up('md')]: {
-    margin: '0 20px',
-  },
-  textAlign: 'left',
-  transition: 'transform 0.3s ease',
-  position: 'relative',
-  overflow: 'hidden',
-  '&:hover': {
-    transform: 'scale(1.05)',
-  },
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "#e5d6f9",
-    borderRadius: '8px',
-    opacity: 0,
-    transition: 'opacity 0.3s ease',
-    zIndex: -1,
-  },
-  '&:hover::before': {
-    opacity: 1,
-  },
-}));
 
 const NumberMemory = () => {
   const [level, setLevel] = useState(1);
@@ -185,46 +109,9 @@ const NumberMemory = () => {
     startTest(1);
   };
 
-  const InfoSection = styled('div')({
-    display: 'flex',
-    flexDirection: isTablet ? 'column' : 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: '50px',
-  });
 
-  const InfoBox = styled('div')(({ theme }) => ({
-    display: "block",
-    width: isMobile ? '90%' : isTablet ? '80%' : '500px',
-    padding: '20px',
-    backgroundColor: 'white',
-    borderRadius: '8px',
-    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-    margin: isTablet ? '20px 0' : '0 20px',
-    textAlign: 'left',
-    transition: 'transform 0.3s ease',
-    position: 'relative',
-    overflow: 'hidden',
-    '&:hover': {
-      transform: 'scale(1.05)',
-    },
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: "#e5d6f9",
-      borderRadius: '8px',
-      opacity: 0,
-      transition: 'opacity 0.3s ease',
-      zIndex: -1,
-    },
-    '&:hover::before': {
-      opacity: 1,
-    },
-  }));
+
+
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyPress);

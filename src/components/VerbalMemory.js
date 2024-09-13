@@ -1,98 +1,16 @@
+// src/components/VerbalMemory.js
 import React, { useState } from 'react';
-import { Box, Button, Typography, Paper, Container, Grid } from '@mui/material';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link } from '@mui/material'; // Import Link from MUI
-import statsimg from "../assets/voilet.png"
-// Custom theme with purple palette
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#7f60d4',
-    },
-    secondary: {
-      main: '#5e45a0',
-    },
-    background: {
-      default: '#f5f3ff',
-      paper: '#ffffff',
-    },
-  },
-});
+import { Box, Button, Typography, Paper, Container, Grid, ThemeProvider } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { Link } from '@mui/material';
+import statsimg from "../assets/voilet.png";
+import { theme, infoSectionStyles, infoBoxStyles, gameButtonStyles, wordDisplayStyles, scoreDisplayStyles } from './Theme';
 
-const StyledPaper = styled(Paper)(({ theme }) => ({
-  padding: theme.spacing(4),
-  borderRadius: 16,
-  boxShadow: '0 8px 32px rgba(127, 96, 212, 0.1)',
-  background: 'linear-gradient(145deg, #ffffff, #f8f6ff)',
-  border: 'none',
-}));
-
-const GameButton = styled(Button)(({ theme }) => ({
-  margin: theme.spacing(1),
-  padding: theme.spacing(1, 4),
-  borderRadius: 25,
-  fontWeight: 'bold',
-  transition: 'all 0.3s',
-  '&:hover': {
-    transform: 'translateY(-2px)',
-    boxShadow: '0 4px 12px rgba(127, 96, 212, 0.2)',
-  },
-}));
-
-const WordDisplay = styled(Typography)(({ theme }) => ({
-  fontWeight: 'bold',
-  color: theme.palette.primary.main,
-  marginBottom: theme.spacing(3),
-}));
-
-const ScoreDisplay = styled(Typography)(({ theme }) => ({
-  fontWeight: 'bold',
-  color: theme.palette.secondary.main,
-  marginTop: theme.spacing(2),
-}));
-
-const isTablet = window.innerWidth <= 768; // Define the 'isTablet' variable based on the window width
-const isMobile = window.innerWidth <= 480; // Define the 'isMobile' variable based on the window width
-const InfoSection = styled('div')({
-  display: 'flex',
-  flexDirection: isTablet ? 'column' : 'row',
-  justifyContent: 'center',
-  alignItems: 'center',
-  marginTop: '50px',
-});
-
-const InfoBox = styled('div')(({ theme }) => ({
-  display: "block",
-  width: isMobile ? '90%' : isTablet ? '80%' : '500px',
-  padding: '20px',
-  backgroundColor: 'white',
-  borderRadius: '8px',
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-  margin: isTablet ? '20px 0' : '0 20px',
-  textAlign: 'left',
-  transition: 'transform 0.3s ease',
-  position: 'relative',
-  overflow: 'hidden',
-  '&:hover': {
-    transform: 'scale(1.05)',
-  },
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "#e5d6f9",
-    borderRadius: '8px',
-    opacity: 0,
-    transition: 'opacity 0.3s ease',
-    zIndex: -1,
-  },
-  '&:hover::before': {
-    opacity: 1,
-  },
-}));
+const InfoSection = styled('div')(infoSectionStyles);
+const InfoBox = styled('div')(infoBoxStyles);
+const GameButton = styled(Button)(gameButtonStyles);
+const WordDisplay = styled(Typography)(wordDisplayStyles);
+const ScoreDisplay = styled(Typography)(scoreDisplayStyles);
 
 const VerbalMemory = () => {
   const [started, setStarted] = useState(false);
@@ -262,5 +180,10 @@ const VerbalMemory = () => {
 
   );
 };
+
+
+
+
+
 
 export default VerbalMemory;

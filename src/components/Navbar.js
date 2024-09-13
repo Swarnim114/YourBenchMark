@@ -51,7 +51,7 @@ const Navbar = () => {
       <CssBaseline />
       <StyledAppBar position="static">
         <Toolbar>
-          <Logo variant="h6">HUMAN BENCHMARK</Logo>
+          <Logo component={Link} to="/" variant="h6">HUMAN BENCHMARK</Logo>
           <div>
             <StyledButton component={Link} to="/reaction-time">Reaction Time</StyledButton>
 
