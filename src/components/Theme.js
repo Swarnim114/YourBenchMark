@@ -28,8 +28,8 @@ const infoSectionStyles = {
   justifyContent: 'center',
   alignItems: 'center',
   flexWrap: 'wrap', // Ensure it wraps when there isn't enough space
-  marginTop: isMobile ? '30px' : '50px',
-  padding: isMobile ? '0 16px' : '0',
+  marginTop: isMobile ? '20px' : '50px',
+  padding: isMobile ? '0PX' : '0',
   gap: isMobile ? '20px' : isTablet ? '30px' : '40px',
 };
 
@@ -38,7 +38,7 @@ const infoBoxStyles = {
   display: 'block',
   minWidth: '375px',
   minHeight: '400px',
-  width: isMobile ? '90%' : '45%', // Full width on mobile, 45% width for larger screens
+  width: isMobile ? '100%' : '45%', // Full width on mobile, 45% width for larger screens
   padding: '20px',
   backgroundColor: 'white',
   borderRadius: '8px',

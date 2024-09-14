@@ -70,6 +70,7 @@ const Navbar = () => {
     { label: "Reaction Time", path: "/reaction-time" },
     { label: "Number Memory", path: "/number-memory" },
     { label: "Verbal Memory", path: "/verbal-memory" },
+    { label: "Visual Memory", path: "/visual-memory" },
   ];
 
   return (
@@ -85,6 +86,7 @@ const Navbar = () => {
             // Show menu icon on mobile screens
             <>
               <IconButton
+                size="1.7rem"
                 edge="end"
                 color="inherit"
                 aria-label="menu"

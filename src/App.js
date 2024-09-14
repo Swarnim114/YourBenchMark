@@ -18,7 +18,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/reaction-time" element={<ReactionTime />} />
           {/* <Route path="/typing-test" element={<TypingTest />} /> */}
-          <Route path="/visual-memory-test" element={<VisualMemoryTest />} />
+          <Route path="/visual-memory" element={<VisualMemoryTest />} />
           <Route path="/sequence-memory" element={<SequenceMemory />} />
           <Route path="/number-memory" element={<NumberMemory />} />
           <Route path="/verbal-memory" element={<VerbalMemory />} />
