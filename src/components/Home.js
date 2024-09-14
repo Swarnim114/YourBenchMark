@@ -26,12 +26,13 @@ const ButtonGrid = styled(Grid)(({ theme }) => ({
   marginTop: theme.spacing(4),
   display: 'flex',
   flexWrap: 'wrap',
-  justifyContent: 'center', // Centers the grid elements horizontally
+  justifyContent: 'center', // Ensure the grid is centered horizontally
+  alignItems: 'center', // Ensure the grid is centered vertically (optional)
   gap: theme.spacing(3), // Adjust the gap between the buttons
 }));
-
 const SquareButton = styled(Button)(({ theme, isMobile, isTablet }) => ({
-  width: isMobile ? '90%' : isTablet ? 300 : 400, // Adjust width based on screen size
+  width: isMobile ? '100%' : isTablet ? 300 : 400, // Use 100% width on mobile to fill the available space
+  maxWidth: '100%', // Ensure there's some padding on mobile screens
   height: isMobile ? 200 : isTablet ? 250 : 300,  // Adjust height based on screen size
   display: 'flex',
   flexDirection: 'column',
