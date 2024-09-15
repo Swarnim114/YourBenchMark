@@ -82,7 +82,7 @@ const Home = () => {
     { path: "/sequence-memory", title: "Sequence Memory", icon: ViewListIcon },
     { path: "/number-memory", title: "Number Memory", icon: NumbersIcon },
     { path: "/verbal-memory", title: "Verbal Memory", icon: TextFieldsIcon },
-    { path: "/AimTrainer", title: "AimTrainer", icon: KeyboardIcon },
+    { path: "/aim-trainer", title: "Aim Trainer", icon: KeyboardIcon },
     { path: "/visual-memory-test", title: "Visual Memory Test", icon: VisibilityIcon },
   ];
 

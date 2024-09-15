@@ -59,7 +59,7 @@ const DropdownMenu = styled('div')(({ theme }) => ({
 
 const Navbar = () => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Check if the screen is mobile-sized
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -72,6 +72,7 @@ const Navbar = () => {
     { label: "Verbal Memory", path: "/verbal-memory" },
     { label: "Visual Memory", path: "/visual-memory" },
     { label: "Sequence Memory", path: "/sequence-memory" },
+
   ];
 
   return (
