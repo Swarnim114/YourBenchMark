@@ -71,6 +71,7 @@ const Navbar = () => {
     { label: "Number Memory", path: "/number-memory" },
     { label: "Verbal Memory", path: "/verbal-memory" },
     { label: "Visual Memory", path: "/visual-memory" },
+    { label: "Sequence Memory", path: "/sequence-memory" },
   ];
 
   return (

@@ -2,7 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import ReactionTime from './components/ReactionTime';
-import TypingTest from './components/TypingTest';
+import AimTrainer from './components/AimTrainer';
 import VisualMemoryTest from './components/VisualMemoryTest';
 import Home from './components/Home';
 import SequenceMemory from './components/SequenceMemory';
@@ -17,7 +17,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/reaction-time" element={<ReactionTime />} />
-          {/* <Route path="/typing-test" element={<TypingTest />} /> */}
+          <Route path="/aim-trainer" element={<AimTrainer />} />
           <Route path="/visual-memory" element={<VisualMemoryTest />} />
           <Route path="/sequence-memory" element={<SequenceMemory />} />
           <Route path="/number-memory" element={<NumberMemory />} />
