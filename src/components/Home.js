@@ -83,7 +83,7 @@ const Home = () => {
     { path: "/number-memory", title: "Number Memory", icon: NumbersIcon },
     { path: "/verbal-memory", title: "Verbal Memory", icon: TextFieldsIcon },
     { path: "/aim-trainer", title: "Aim Trainer", icon: KeyboardIcon },
-    { path: "/visual-memory-test", title: "Visual Memory Test", icon: VisibilityIcon },
+    { path: "/visual-memory", title: "Visual Memory Test", icon: VisibilityIcon },
   ];
 
   return (

@@ -72,6 +72,7 @@ const Navbar = () => {
     { label: "Verbal Memory", path: "/verbal-memory" },
     { label: "Visual Memory", path: "/visual-memory" },
     { label: "Sequence Memory", path: "/sequence-memory" },
+    { label: "Aim Trainer", path: "/aim-trainer" },
 
   ];
 
