@@ -1,121 +1,180 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Button, Typography, TextField, LinearProgress, Container, Grid, useMediaQuery } from '@mui/material';
-import { styled, createTheme, ThemeProvider } from '@mui/material/styles';
-import { Link } from '@mui/material';
+import React, { useState, useEffect } from "react";
+import { infoSectionStyles, infoBoxStyles, gameButtonStyles } from "./Theme";
+import { Box, Button, Typography, Container, Link } from "@mui/material";
+import { styled, ThemeProvider, createTheme } from "@mui/material/styles";
 import statsimg from "../assets/voilet.png";
-
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#7f60d4',
+      main: "#7f60d4",
     },
     secondary: {
-      main: '#5e45a0',
+      main: "#5e45a0",
     },
     background: {
-      default: '#f5f3ff',
-      paper: '#ffffff',
+      default: "#f5f3ff",
+      paper: "#ffffff",
     },
   },
 });
-const isTablet = window.innerWidth <= 768; // Define the 'isTablet' variable based on the window width
-const isMobile = window.innerWidth <= 480; // Define the 'isMobile' variable based on the window width
-const InfoSection = styled('div')({
-  display: 'flex',
-  flexDirection: isTablet ? 'column' : 'row',
-  justifyContent: 'center',
-  alignItems: 'center',
-  marginTop: '50px',
-});
 
-const InfoBox = styled('div')(({ theme }) => ({
-  display: "block",
-  width: isMobile ? '90%' : isTablet ? '80%' : '500px',
-  padding: '20px',
-  backgroundColor: 'white',
-  borderRadius: '8px',
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-  margin: isTablet ? '20px 0' : '0 20px',
-  textAlign: 'left',
-  transition: 'transform 0.3s ease',
-  position: 'relative',
-  overflow: 'hidden',
-  '&:hover': {
-    transform: 'scale(1.05)',
-  },
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "#e5d6f9",
-    borderRadius: '8px',
-    opacity: 0,
-    transition: 'opacity 0.3s ease',
-    zIndex: -1,
-  },
-  '&:hover::before': {
-    opacity: 1,
-  },
-}));
+const InfoSection = styled("div")(infoSectionStyles);
+const InfoBox = styled("div")(infoBoxStyles);
+const GameButton = styled(Button)(gameButtonStyles);
 
-const SequenceMemory = () => {
-  const [sequence, setSequence] = useState([Math.floor(Math.random() * 4)]); // Sample sequence
+const generateRandomChar = () => {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%&";
+  return chars.charAt(Math.floor(Math.random() * chars.length));
+};
 
-  const generateNextInSequence = () => {
-    setSequence([...sequence, Math.floor(Math.random() * 4)]);
+const shuffleArray = (array) => {
+  return array.sort(() => Math.random() - 0.5);
+};
+
+function SequenceMemory() {
+  const [level, setLevel] = useState(1);
+  const [sequence, setSequence] = useState([]);
+  const [options, setOptions] = useState([]);
+  const [userInput, setUserInput] = useState([]);
+  const [testStarted, setTestStarted] = useState(false);
+  const [testOver, setTestOver] = useState(false);
+  const [currentDisplayIndex, setCurrentDisplayIndex] = useState(0);
+  const [displayingSequence, setDisplayingSequence] = useState(true);
+
+  useEffect(() => {
+    if (testStarted && !testOver) {
+      const newChar = generateRandomChar();
+      const newChar2 = generateRandomChar();
+      const newSequence = [...sequence, newChar, newChar2];
+      setSequence(newSequence);
+
+      setDisplayingSequence(true);
+      setCurrentDisplayIndex(newSequence.length-2);
+
+      const correctOption = newSequence.join("");
+      const otherOptions = [generateRandomChar(), generateRandomChar(), generateRandomChar()]
+        .map((char) => newSequence.slice(0, -1).join("") + char)
+        .filter((option) => option !== correctOption);
+
+      const shuffledOptions = shuffleArray([correctOption, ...otherOptions]);
+      setOptions(shuffledOptions);
+    }
+  }, [level, testStarted]);
+
+  useEffect(() => {
+    if (displayingSequence && currentDisplayIndex < sequence.length) {
+      const timer = setTimeout(() => {
+        setCurrentDisplayIndex(currentDisplayIndex + 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (currentDisplayIndex === sequence.length) {
+      setDisplayingSequence(false); 
+    }
+  }, [currentDisplayIndex, displayingSequence, sequence]);
+
+  const handleOptionClick = (option) => {
+    const correctSequence = sequence.join("");
+    if (option === correctSequence) {
+      setUserInput([...userInput, option]);
+      setLevel(level + 1);
+    } else {
+      setTestOver(true);
+    }
+  };
+
+  const handleRestart = () => {
+    setLevel(1);
+    setSequence([]);
+    setUserInput([]);
+    setTestStarted(false);
+    setTestOver(false);
   };
 
   return (
-    <Box sx={{ textAlign: 'center', padding: '20px' }}>
-      <Typography variant="h4">Sequence Memory Test</Typography>
-      <Box sx={{ marginTop: '20px' }}>
-        {sequence.map((num, index) => (
-          <Typography key={index} variant="h6">
-            {num}
-          </Typography>
-        ))}
+    <ThemeProvider theme={theme}>
+      <Box sx={{ backgroundColor: theme.palette.background.default, height: "100vh" }}>
+        <Container sx={{ backgroundColor:theme.palette.background.default, height: "48vh"  , flexDirection: "column", justifyContent: "center", alignItems: "top"}}>
+          {testStarted && !testOver && (
+            <Box>
+              <Typography variant="h5">Level {level}</Typography>
+              {displayingSequence ? (
+                <Typography variant="h6">Remember this sequence:</Typography>
+              ) : (
+                <Typography variant="h6">Choose the correct sequence:</Typography>
+              )}
+
+              {displayingSequence && (
+                <Typography variant="h4" sx={{ margin: "16px" }}>
+                  {sequence[currentDisplayIndex] ? sequence[currentDisplayIndex] : ""}
+                </Typography>
+              )}
+
+              {!displayingSequence &&
+                options.map((option, index) => (
+                  <GameButton
+                    key={index}
+                    variant="contained"
+                    color="primary"
+                    onClick={() => handleOptionClick(option)}
+                    sx={{ margin: "8px" }}
+                  >
+                    {option}
+                  </GameButton>
+                ))}
+            </Box>
+          )}
+          {testOver && (
+            <Box>
+              <Typography variant="h6">Game Over!</Typography>
+              <GameButton variant="contained" color="primary" onClick={handleRestart}>
+                Test Again
+              </GameButton>
+            </Box>
+          )}
+          {!testStarted && !testOver && (
+            <GameButton variant="contained" color="primary" onClick={() => setTestStarted(true)}>
+              Start Test
+            </GameButton>
+          )}
+        </Container>
+
+        <Container sx={{ backgroundColor: theme.palette.background.default, height: "47vh" }}>
+          <InfoSection sx={{ marginTop: "0px" }}>
+            <InfoBox>
+              <Typography variant="h6" gutterBottom>
+                Statistics
+              </Typography>
+              <img src={statsimg} alt="Statistics" style={{ width: "100%", maxWidth: "400px", margin: "0 auto" }} />
+            </InfoBox>
+            <InfoBox sx={{ minHeight: { xs: "200px", sm: "400px" } }}>
+              <Typography variant="h6" gutterBottom>
+                About the test
+              </Typography>
+              <Typography paragraph>
+                The average person can only remember 7 digit numbers reliably, but it's possible to do much better using mnemonic techniques.
+              </Typography>
+              <Typography component="div">
+                <Link href="https://en.wikipedia.org/wiki/Katapayadi_system" target="_blank" rel="noopener noreferrer" sx={{ color: "primary.main" }}>
+                  Katapayadi system
+                </Link>
+              </Typography>
+              <Typography component="div">
+                <Link href="https://en.wikipedia.org/wiki/Mnemonic_major_system" target="_blank" rel="noopener noreferrer" sx={{ color: "primary.main" }}>
+                  Mnemonic major system
+                </Link>
+              </Typography>
+              <Typography component="div">
+                <Link href="https://en.wikipedia.org/wiki/Dominic_system" target="_blank" rel="noopener noreferrer" sx={{ color: "primary.main" }}>
+                  Dominic system
+                </Link>
+              </Typography>
+            </InfoBox>
+          </InfoSection>
+        </Container>
       </Box>
-      <Button variant="contained" onClick={generateNextInSequence} sx={{ marginTop: '20px' }}>
-        Next in Sequence
-      </Button>
-      <InfoSection>
-        <InfoBox>
-          <Typography variant="h6" gutterBottom>Statistics</Typography>
-          <img src={statsimg} alt="Statistics" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }} />
-        </InfoBox>
-        <InfoBox sx={{minHeight: '400px '}}>
-          <Typography variant="h6" gutterBottom>About the test</Typography>
-          <Typography paragraph>
-            The average person can only remember 7 digit numbers reliably, but it's possible to do much better using mnemonic techniques. Some helpful links are provided below.
-          </Typography>
-          <Typography component="div">
-            <Link style={{ color: '#7f60d4' }} href="https://en.wikipedia.org/wiki/Katapayadi_system" target="_blank" rel="noopener noreferrer">
-              Katapayadi system
-            </Link>
-          </Typography>
-          <Typography component="div">
-            <Link style={{ color: '#7f60d4' }} href="https://en.wikipedia.org/wiki/Mnemonic_major_system" target="_blank" rel="noopener noreferrer">
-              Mnemonic major system
-            </Link>
-          </Typography>
-          <Typography component="div">
-            <Link style={{ color: '#7f60d4' }} href="https://en.wikipedia.org/wiki/Dominic_system" target="_blank" rel="noopener noreferrer">
-              Dominic system
-            </Link>
-          </Typography>
-          <Typography component="div">
-            <Link style={{ color: '#7f60d4' }} href="https://en.wikipedia.org/wiki/Katapayadi_system" target="_blank" rel="noopener noreferrer">
-              Katapayadi system
-            </Link>
-          </Typography>
-        </InfoBox>
-      </InfoSection>
-    </Box>
+    </ThemeProvider>
   );
-};
+}
 
 export default SequenceMemory;

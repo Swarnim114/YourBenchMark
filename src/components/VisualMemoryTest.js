@@ -26,6 +26,8 @@ const theme = createTheme({
   },
 });
 
+
+
 function VisualMemoryTest() {
   const [level, setLevel] = useState(1);
   const [gridSize, setGridSize] = useState(3);
