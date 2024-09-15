@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
-import { useMediaQuery, useTheme } from '@mui/material';
+import { Box, useMediaQuery, useTheme } from '@mui/material';
 
 const Container = styled('div')({
   textAlign: 'center',
   marginTop: '0px',
   padding: '0px',
   width: '100%',
-  minHeight: '100vh',
+  minHeight: '100%',
   backgroundColor: '#f5f3ff',
+  overflow: 'auto',
 });
 
 const Header = styled('div')(({ theme, isMobile }) => ({
@@ -136,7 +137,8 @@ const ReactionTime = () => {
   };
 
   return (
-    <Container>
+
+    <Container sx={{height : '100vh'}}>
       <Header isMobile={isMobile.toString()}>
         <Title isMobile={isMobile.toString()}>Reaction Time Test</Title>
         <Instructions isMobile={isMobile.toString()}>

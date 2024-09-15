@@ -4,7 +4,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
-import { styled } from '@mui/material/styles';
+import { styled, createTheme } from '@mui/material/styles'; // Import createTheme
 import { CssBaseline, IconButton, Collapse, useMediaQuery } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@mui/material/styles';
@@ -17,6 +17,20 @@ const GlobalStyle = styled('div')({
   height: '100%',
   boxSizing: 'border-box',
 });
+
+
+const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 1025, // Updated md breakpoint to 1024px
+      lg: 1200,
+      xl: 1536,
+    },
+  },
+});
+
 
 // Styled AppBar
 const StyledAppBar = styled(AppBar)({
@@ -48,7 +62,7 @@ const StyledButton = styled(Button)({
   },
 });
 
-// Dropdown menu for mobile screens with a background color to ensure contrast
+// Dropdown menu for mobile and tablet screens with a background color for consistency
 const DropdownMenu = styled('div')(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -59,7 +73,11 @@ const DropdownMenu = styled('div')(({ theme }) => ({
 
 const Navbar = () => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  // Use breakpoints to target mobile and tablet screens, including landscape tablets
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // mobile (<=600px)
+  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md')); // tablets (600px - 960px)
+
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -73,7 +91,6 @@ const Navbar = () => {
     { label: "Visual Memory", path: "/visual-memory" },
     { label: "Sequence Memory", path: "/sequence-memory" },
     { label: "Aim Trainer", path: "/aim-trainer" },
-
   ];
 
   return (
@@ -85,8 +102,8 @@ const Navbar = () => {
             HUMAN BENCHMARK
           </Logo>
 
-          {isMobile ? (
-            // Show menu icon on mobile screens
+          {(isMobile || isTablet) ? (
+            // Show menu icon for mobile and tablet screens
             <>
               <IconButton
                 size="1.7rem"
@@ -99,8 +116,8 @@ const Navbar = () => {
               </IconButton>
             </>
           ) : (
-            // Show full menu on desktop screens
-            <div>
+            // Show full menu on larger screens
+            <div >
               {menuItems.map((item, index) => (
                 <StyledButton component={Link} to={item.path} key={index}>
                   {item.label}
@@ -111,8 +128,8 @@ const Navbar = () => {
         </Toolbar>
       </StyledAppBar>
 
-      {/* Dropdown menu for mobile screens */}
-      {isMobile && (
+      {/* Dropdown menu for mobile and tablet screens */}
+      {(isMobile || isTablet) && (
         <Collapse in={menuOpen} timeout="auto" unmountOnExit>
           <DropdownMenu>
             {menuItems.map((item, index) => (
