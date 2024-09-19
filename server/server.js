@@ -1,6 +1,7 @@
 const express = require('express');
 const connectDB = require('./config/db');
 const dotenv = require('dotenv');
+const userRoutes = require('./routes/userRoutes');
 
 dotenv.config();
 
@@ -13,10 +14,7 @@ connectDB();
 app.use(express.json({ extended: false }));
 
 // Define Routes
-app.get("/", (req, res) => {
-  console.log("Hello World");
-  res.send("Hello World");
-});
+app.use('/users', userRoutes); // Mount the user router at the '/users' path
 
 const PORT = process.env.PORT || 5000;
 
