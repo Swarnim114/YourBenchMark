@@ -13,7 +13,7 @@ connectDB();
 
 // CORS configuration
 const corsOptions = {
-  origin: 'http://localhost:3000', // Replace with your frontend's URL
+  origin: 'https://yourbenchmark.onrender.com', // Replace with your frontend's URL
   optionsSuccessStatus: 200
 };
 
