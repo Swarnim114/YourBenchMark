@@ -43,7 +43,7 @@ const AboutUser = () => {
           return;
         }
 
-        const response = await axios.get(`http://localhost:5000/users/${userId}`);
+        const response = await axios.get(`https://yourbenchmark.onrender.com/users/${userId}`);
         setUserResults(response.data);
       } catch (error) {
         setError('Error fetching user data: ' + error.message);
@@ -73,7 +73,7 @@ const AboutUser = () => {
       const parsedUser = JSON.parse(storedUser);
       const userId = parsedUser._id;
 
-      const response = await axios.delete(`http://localhost:5000/users/${userId}`);
+      const response = await axios.delete(`https://yourbenchmark.onrender.com/users/${userId}`);
 
       if (response.status === 200) {
         localStorage.removeItem('user');
@@ -86,7 +86,7 @@ const AboutUser = () => {
       console.error('Error deleting user data:', error);
       setError('Error deleting user data: ' + (error.response?.data?.message || error.message));
     }
-  };  
+  };
 
   const ResultSection = ({ title, data, unit }) => (
     <Paper elevation={3} sx={{ padding: 4, borderRadius: 2, marginTop: '20px' }}>

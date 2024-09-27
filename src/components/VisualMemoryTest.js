@@ -74,7 +74,7 @@ function VisualMemoryTest() {
 
         setUserId(userId);
 
-        const response = await axios.get(`http://localhost:5000/users/${userId}`);
+        const response = await axios.get(`https://yourbenchmark.onrender.com/users/${userId}`);
         setTestResults(response.data.testResults);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -85,7 +85,7 @@ function VisualMemoryTest() {
   }, []);
   const saveTestResults = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/users/${userId}`);
+      const response = await axios.get(`https://yourbenchmark.onrender.com/users/${userId}`);
       const userData = response.data;
 
       const currentTestResults = userData.testResults || {
@@ -112,7 +112,7 @@ function VisualMemoryTest() {
         avg: newAvg,
       };
 
-      await axios.patch(`http://localhost:5000/users/${userId}`, {
+      await axios.patch(`https://yourbenchmark.onrender.com/users/${userId}`, {
         testResults: currentTestResults,
       });
 

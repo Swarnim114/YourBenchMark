@@ -56,7 +56,7 @@ const VerbalMemory = () => {
         setUserId(userId);
 
         // Update the URL to point to your backend
-        const response = await axios.get(`http://localhost:5000/users/${userId}`);
+        const response = await axios.get(`https://yourbenchmark.onrender.com/users/${userId}`);
         setTestResults(response.data.testResults);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -72,7 +72,7 @@ const VerbalMemory = () => {
 
 
     if (oldWords.length > 0 && Math.random() < repetitionProbability) {
-      
+
       do {
         const randomIndex = Math.floor(Math.random() * oldWords.length);
         newWord = oldWords[randomIndex];
@@ -125,7 +125,7 @@ const VerbalMemory = () => {
 
   const saveTestResults = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/users/${userId}`);
+      const response = await axios.get(`https://yourbenchmark.onrender.com/users/${userId}`);
       const userData = response.data;
 
       // Ensure testResults exists, including all test types
@@ -155,7 +155,7 @@ const VerbalMemory = () => {
       };
 
       // Send updated testResults back to the server
-      await axios.patch(`http://localhost:5000/users/${userId}`, {
+      await axios.patch(`https://yourbenchmark.onrender.com/users/${userId}`, {
         testResults: currentTestResults,
       });
 

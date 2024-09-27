@@ -17,7 +17,7 @@ const theme = createTheme({
 });
 
 // Hardcoded API base URL
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = 'https://yourbenchmark.onrender.com';
 
 const RegisterPage = () => {
     const [name, setName] = useState('');
