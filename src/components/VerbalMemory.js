@@ -67,9 +67,28 @@ const VerbalMemory = () => {
   }, []);
 
   const generateWord = () => {
-    const randomIndex = Math.floor(Math.random() * wordList.length);
-    return wordList[randomIndex];
+    const repetitionProbability = 0.4;
+    let newWord;
+
+
+    if (oldWords.length > 0 && Math.random() < repetitionProbability) {
+      
+      do {
+        const randomIndex = Math.floor(Math.random() * oldWords.length);
+        newWord = oldWords[randomIndex];
+      } while (newWord === word); // Avoid consecutive same words
+    } else {
+      // Generate a completely new word
+      do {
+        const randomIndex = Math.floor(Math.random() * wordList.length);
+        newWord = wordList[randomIndex];
+      } while (newWord === word); // Ensure no consecutive same words
+    }
+
+    return newWord;
   };
+
+
 
   const startGame = () => {
     setStarted(true);

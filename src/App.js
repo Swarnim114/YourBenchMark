@@ -10,7 +10,9 @@ import NumberMemory from './components/NumberMemory';
 import VerbalMemory from './components/VerbalMemory';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
+import AboutUser from './components/AboutUser';
 import ProtectedRoute from './components/ProtectedRoutes';
+
 
 function App() {
   return (
@@ -75,6 +77,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <VerbalMemory />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/about"
+            element={
+              <ProtectedRoute>
+                <AboutUser />
               </ProtectedRoute>
             }
           />

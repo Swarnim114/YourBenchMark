@@ -8,6 +8,8 @@ import { styled, createTheme } from '@mui/material/styles'; // Import createThem
 import { CssBaseline, IconButton, Collapse, useMediaQuery } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@mui/material/styles';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
 
 // Global style reset for body and html to remove default margins
 const GlobalStyle = styled('div')({
@@ -83,7 +85,6 @@ const Navbar = () => {
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
-
   const menuItems = [
     { label: "Reaction Time", path: "/reaction-time" },
     { label: "Number Memory", path: "/number-memory" },
@@ -91,7 +92,9 @@ const Navbar = () => {
     { label: "Visual Memory", path: "/visual-memory" },
     { label: "Sequence Memory", path: "/sequence-memory" },
     { label: "Aim Trainer", path: "/aim-trainer" },
+    { icon: <AccountCircleIcon />, path: "/about" },
   ];
+
 
   return (
     <GlobalStyle>
@@ -99,11 +102,10 @@ const Navbar = () => {
       <StyledAppBar position="static">
         <Toolbar>
           <Logo component={Link} to="/" variant="h6">
-            HUMAN BENCHMARK
+            YOUR BENCHMARK
           </Logo>
 
           {(isMobile || isTablet) ? (
-            // Show menu icon for mobile and tablet screens
             <>
               <IconButton
                 size="1.7rem"
@@ -116,35 +118,38 @@ const Navbar = () => {
               </IconButton>
             </>
           ) : (
-            // Show full menu on larger screens
-            <div >
+            <div>
               {menuItems.map((item, index) => (
                 <StyledButton component={Link} to={item.path} key={index}>
-                  {item.label}
+                  {/* Render icon if present, otherwise show label */}
+                  {item.icon ? item.icon : item.label}
                 </StyledButton>
               ))}
             </div>
           )}
         </Toolbar>
+
       </StyledAppBar>
 
       {/* Dropdown menu for mobile and tablet screens */}
       {(isMobile || isTablet) && (
         <Collapse in={menuOpen} timeout="auto" unmountOnExit>
-          <DropdownMenu>
-            {menuItems.map((item, index) => (
-              <StyledButton
-                component={Link}
-                to={item.path}
-                key={index}
-                onClick={() => setMenuOpen(false)} // Close menu on item click
-                style={{ color: '#ffffff' }}  // Ensure the text is white for visibility
-              >
-                {item.label}
-              </StyledButton>
-            ))}
-          </DropdownMenu>
-        </Collapse>
+        <DropdownMenu>
+          {menuItems.map((item, index) => (
+            <StyledButton
+              component={Link}
+              to={item.path}
+              key={index}
+              onClick={() => setMenuOpen(false)}
+              style={{ color: '#ffffff' }}
+            >
+              {/* Render icon if present, otherwise show label */}
+              {item.icon ? item.icon : item.label}
+            </StyledButton>
+          ))}
+        </DropdownMenu>
+      </Collapse>
+
       )}
     </GlobalStyle>
   );
