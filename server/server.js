@@ -1,0 +1,30 @@
+const express = require('express');
+const connectDB = require('./config/db');
+const dotenv = require('dotenv');
+const userRoutes = require('./routes/userRoutes');
+const cors = require('cors');
+
+dotenv.config();
+
+const app = express();
+
+// Connect Database
+connectDB();
+
+// CORS configuration
+const corsOptions = {
+  origin: 'http://localhost:3000', // Replace with your frontend's URL
+  optionsSuccessStatus: 200
+};
+
+// Init Middleware
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Define Routes
+app.use('/users', userRoutes);
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

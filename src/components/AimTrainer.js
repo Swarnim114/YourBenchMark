@@ -4,6 +4,7 @@ import { styled, ThemeProvider, keyframes } from '@mui/material/styles';
 import { theme } from './Theme';
 import { infoSectionStyles, infoBoxStyles, gameButtonStyles } from './Theme';
 import statsimg from "../assets/voilet.png";
+import axios from 'axios';
 
 const InfoSection = styled('div')(infoSectionStyles);
 const InfoBox = styled('div')(infoBoxStyles);
@@ -73,8 +74,69 @@ const AimTrainer = () => {
   const [positions, setPositions] = useState({ top: 0, left: 0 });
   const [testOver, setTestOver] = useState(false);
   const [testStarted, setTestStarted] = useState(false);
-  const targetCount = 20;
+  const [userId, setUserId] = useState('');
+  const [testResults, setTestResults] = useState({});
+  const targetCount = 10;
   const gameAreaRef = useRef(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const storedUser = localStorage.getItem('user');
+        if (!storedUser) {
+          console.error('User data not found in localStorage');
+          return;
+        }
+
+        const parsedUser = JSON.parse(storedUser);
+        const userId = parsedUser._id;
+        if (!userId) {
+          console.error('User ID is missing in stored user data');
+          return;
+        }
+
+        setUserId(userId);
+
+        const response = await axios.get(`http://localhost:5000/users/${userId}`);
+        setTestResults(response.data.testResults);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+
+  const saveTestResults = async () => {
+    try {
+      const currentTestResults = testResults || {
+        aimTrainer: { noOfTests: 0, total: 0, min: 0, max: 0, avg: 0 },
+      };
+
+      const newNoOfTests = (currentTestResults.aimTrainer.noOfTests || 0) + 1;
+      const newTotal = (currentTestResults.aimTrainer.total || 0) + totalTime/targetCount;
+      const newMin = Math.min(currentTestResults.aimTrainer.min || Infinity, totalTime/targetCount);
+      const newMax = Math.max(currentTestResults.aimTrainer.max || 0, totalTime/targetCount);
+      const newAvg = newTotal / newNoOfTests;
+
+      currentTestResults.aimTrainer = {
+        noOfTests: newNoOfTests,
+        total: newTotal,
+        min: newMin,
+        max: newMax,
+        avg: newAvg,
+      };
+
+      await axios.patch(`http://localhost:5000/users/${userId}`, {
+        testResults: currentTestResults,
+      });
+
+      console.log('Test results saved successfully');
+    } catch (error) {
+      console.error('Error saving test results:', error);
+    }
+  };
 
   const getRandomPosition = () => {
     if (!gameAreaRef.current) return { top: '0px', left: '0px' };
@@ -100,6 +162,7 @@ const AimTrainer = () => {
     setTotalTime((prevTotal) => prevTotal + clickTime);
     setCircleCount((prevCount) => prevCount + 1);
     if (circleCount + 1 === targetCount) {
+      saveTestResults();
       setTestOver(true);
     } else {
       setPositions(getRandomPosition());
