@@ -6,6 +6,8 @@ import correctSound from '../assets/sounds/correct.mp3';
 import incorrectSound from '../assets/sounds/incorrect.mp3';
 import statsimg from "../assets/voilet.png";
 import { infoSectionStyles, infoBoxStyles, gameButtonStyles } from './Theme';
+import axios from 'axios';
+
 
 const InfoSection = styled('div')(infoSectionStyles);
 const InfoBox = styled('div')(infoBoxStyles);
@@ -38,6 +40,9 @@ function VisualMemoryTest() {
   const [message, setMessage] = useState('');
   const [flipStatus, setFlipStatus] = useState('');
   const gridContainerRef = useRef(null);
+  const [userId, setUserId] = useState('');
+  const [testResults, setTestResults] = useState([]);
+
 
   useEffect(() => {
     if (level >= 1 && level <= 3) {
@@ -50,6 +55,72 @@ function VisualMemoryTest() {
       setGridSize(6);
     }
   }, [level]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const storedUser = localStorage.getItem('user');
+        if (!storedUser) {
+          console.error('User data not found in localStorage');
+          return;
+        }
+
+        const parsedUser = JSON.parse(storedUser);
+        const userId = parsedUser._id;
+        if (!userId) {
+          console.error('User ID is missing in stored user data');
+          return;
+        }
+
+        setUserId(userId);
+
+        const response = await axios.get(`http://localhost:5000/users/${userId}`);
+        setTestResults(response.data.testResults);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+  const saveTestResults = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/users/${userId}`);
+      const userData = response.data;
+
+      const currentTestResults = userData.testResults || {
+        reactionTime: { noOfTests: 0, total: 0, min: 0, max: 0, avg: 0 },
+        sequenceMemory: { noOfTests: 0, total: 0, min: 0, max: 0, avg: 0 },
+        numberMemory: { noOfTests: 0, total: 0, min: 0, max: 0, avg: 0 },
+        verbalMemory: { noOfTests: 0, total: 0, min: 0, max: 0, avg: 0 },
+        aimTrainer: { noOfTests: 0, total: 0, min: 0, max: 0, avg: 0 },
+        visualMemory: { noOfTests: 0, total: 0, min: 0, max: 0, avg: 0 },
+      };
+
+      const visualMemory = currentTestResults.visualMemory || {};
+      const newNoOfTests = (visualMemory.noOfTests || 0) + 1;
+      const newTotal = (visualMemory.total || 0) + level;
+      const newMin = Math.min(visualMemory.min || level, level);
+      const newMax = Math.max(visualMemory.max || level, level);
+      const newAvg = newTotal / newNoOfTests;
+
+      currentTestResults.visualMemory = {
+        noOfTests: newNoOfTests,
+        total: newTotal,
+        min: newMin,
+        max: newMax,
+        avg: newAvg,
+      };
+
+      await axios.patch(`http://localhost:5000/users/${userId}`, {
+        testResults: currentTestResults,
+      });
+
+      console.log('Test results saved successfully');
+    } catch (error) {
+      console.error('Error saving test results:', error);
+    }
+  };
 
   useEffect(() => {
     setGrid(Array(gridSize * gridSize).fill(false));
@@ -117,6 +188,7 @@ function VisualMemoryTest() {
           setStage('memorizing');
         }, 1000);
       } else {
+        saveTestResults();
         setMessage('Incorrect! Try again.');
         setTimeout(() => {
           setStage('failed');

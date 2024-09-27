@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import { Box, useMediaQuery, useTheme } from '@mui/material';
+import axios from 'axios';
+import { useEffect } from 'react';
+
 
 const Container = styled('div')({
   textAlign: 'center',
@@ -89,6 +92,59 @@ const ReactionTime = () => {
   const [reactionTime, setReactionTime] = useState(null);
   const [testCount, setTestCount] = useState(0);
   const [reactionTimes, setReactionTimes] = useState([]);
+  const [userId, setUserId] = useState('');
+  const [testResults, setTestResults] = useState({});
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const storedUser = localStorage.getItem('user');
+        if (!storedUser) {
+          console.error('User data not found in localStorage');
+          return;
+        }
+        const parsedUser = JSON.parse(storedUser);
+        const userId = parsedUser._id;
+        setUserId(userId);
+
+        const response = await axios.get(`http://localhost:5000/users/${userId}`);
+        setTestResults(response.data.testResults);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
+    fetchUserData();
+  }, []);
+
+  const saveTestResults = async () => {
+    try {
+      const currentTestResults = testResults || {
+        reactionTime: { noOfTests: 0, total: 0, min: 0, max: 0, avg: 0 },
+      };
+
+      const newNoOfTests = (currentTestResults.reactionTime.noOfTests || 0) + 1;
+      const newTotal = (currentTestResults.reactionTime.total || 0) + parseFloat(getAverageReactionTime());
+      const newMin = Math.min(currentTestResults.reactionTime.min || Infinity, ...reactionTimes);
+      const newMax = Math.max(currentTestResults.reactionTime.max || 0, ...reactionTimes);
+      const newAvg = newTotal / newNoOfTests;
+
+      currentTestResults.reactionTime = {
+        noOfTests: newNoOfTests,
+        total: newTotal,
+        min: newMin,
+        max: newMax,
+        avg: newAvg,
+      };
+
+      await axios.patch(`http://localhost:5000/users/${userId}`, {
+        testResults: currentTestResults,
+      });
+
+      console.log('Test results saved successfully');
+    } catch (error) {
+      console.error('Error saving test results:', error);
+    }
+  };
 
   const startTest = () => {
     if (testCount >= 5) return;
@@ -120,6 +176,9 @@ const ReactionTime = () => {
         startTest();
       }
     } else {
+      // Save test results when test is completed
+      saveTestResults();
+
       // Restart the test
       setWaiting(false);
       setStartTime(null);
@@ -128,6 +187,7 @@ const ReactionTime = () => {
       setTestCount(0);
     }
   };
+
 
 
   const getAverageReactionTime = () => {
