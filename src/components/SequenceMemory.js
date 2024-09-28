@@ -264,7 +264,7 @@ const SequenceMemory = () => {
           <InfoBox sx={{minHeight: '400px '}}>
             <Typography variant="h6" gutterBottom>About the test</Typography>
             <Typography paragraph>
-              This test helps improve memory by challenging you to remember and correctly input a sequence of letters. The sequence length increases with each level.
+              This test helps improve memory by challenging you to remember and correctly input a sequence of letters. The sequence length increases with each level.You have to remember the letters in sequence <br></br>from level 1 and forword.
             </Typography>
           </InfoBox>
         </InfoSection>

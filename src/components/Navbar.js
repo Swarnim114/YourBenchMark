@@ -3,13 +3,12 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
-import { styled, createTheme } from '@mui/material/styles'; // Import createTheme
+import { Link, useNavigate } from 'react-router-dom';
+import { styled, createTheme } from '@mui/material/styles';
 import { CssBaseline, IconButton, Collapse, useMediaQuery } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@mui/material/styles';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
 
 // Global style reset for body and html to remove default margins
 const GlobalStyle = styled('div')({
@@ -19,7 +18,6 @@ const GlobalStyle = styled('div')({
   height: '100%',
   boxSizing: 'border-box',
 });
-
 
 const theme = createTheme({
   breakpoints: {
@@ -32,7 +30,6 @@ const theme = createTheme({
     },
   },
 });
-
 
 // Styled AppBar
 const StyledAppBar = styled(AppBar)({
@@ -75,6 +72,7 @@ const DropdownMenu = styled('div')(({ theme }) => ({
 
 const Navbar = () => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   // Use breakpoints to target mobile and tablet screens, including landscape tablets
   const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // mobile (<=600px)
@@ -85,6 +83,7 @@ const Navbar = () => {
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+
   const menuItems = [
     { label: "Reaction Time", path: "/reaction-time" },
     { label: "Number Memory", path: "/number-memory" },
@@ -92,9 +91,15 @@ const Navbar = () => {
     { label: "Visual Memory", path: "/visual-memory" },
     { label: "Sequence Memory", path: "/sequence-memory" },
     { label: "Aim Trainer", path: "/aim-trainer" },
-    { icon: <AccountCircleIcon />, path: "/about" },
   ];
 
+  const handleAccountClick = () => {
+    if (localStorage.getItem('token')) {
+      navigate('/about'); // Navigate to about page if logged in
+    } else {
+      navigate('/login'); // Navigate to login page if not logged in
+    }
+  };
 
   return (
     <GlobalStyle>
@@ -116,40 +121,62 @@ const Navbar = () => {
               >
                 <MenuIcon style={{ color: 'white' }} />
               </IconButton>
+              <IconButton
+                size="1.7rem"
+                edge="end"
+                color="inherit"
+                aria-label="account"
+                onClick={handleAccountClick}
+              >
+                <AccountCircleIcon style={{ color: 'white' }} />
+              </IconButton>
             </>
           ) : (
             <div>
               {menuItems.map((item, index) => (
                 <StyledButton component={Link} to={item.path} key={index}>
-                  {/* Render icon if present, otherwise show label */}
-                  {item.icon ? item.icon : item.label}
+                  {item.label}
                 </StyledButton>
               ))}
+              <IconButton
+                edge="end"
+                color="inherit"
+                aria-label="account"
+                onClick={handleAccountClick}
+              >
+                <AccountCircleIcon style={{ color: 'white' }} />
+              </IconButton>
             </div>
           )}
         </Toolbar>
-
       </StyledAppBar>
 
       {/* Dropdown menu for mobile and tablet screens */}
       {(isMobile || isTablet) && (
         <Collapse in={menuOpen} timeout="auto" unmountOnExit>
-        <DropdownMenu>
-          {menuItems.map((item, index) => (
+          <DropdownMenu>
+            {menuItems.map((item, index) => (
+              <StyledButton
+                component={Link}
+                to={item.path}
+                key={index}
+                onClick={() => setMenuOpen(false)}
+                style={{ color: '#ffffff' }}
+              >
+                {item.label}
+              </StyledButton>
+            ))}
             <StyledButton
-              component={Link}
-              to={item.path}
-              key={index}
-              onClick={() => setMenuOpen(false)}
+              onClick={() => {
+                setMenuOpen(false);
+                handleAccountClick();
+              }}
               style={{ color: '#ffffff' }}
             >
-              {/* Render icon if present, otherwise show label */}
-              {item.icon ? item.icon : item.label}
+              <AccountCircleIcon /> {/* Account icon in dropdown */}
             </StyledButton>
-          ))}
-        </DropdownMenu>
-      </Collapse>
-
+          </DropdownMenu>
+        </Collapse>
       )}
     </GlobalStyle>
   );

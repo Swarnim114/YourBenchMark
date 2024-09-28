@@ -25,6 +25,11 @@ app.use(express.urlencoded({ extended: true }));
 // Define Routes
 app.use('/users', userRoutes);
 
+// Constant PING to keep Render container alive
+// app.get('/ping', (req, res) => {
+//   res.send('pong');
+// });
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

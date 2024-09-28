@@ -172,12 +172,15 @@ const ReactionTime = () => {
         setReactionTimes((prevTimes) => [...prevTimes, newReactionTime]);
         setTestCount((prevCount) => prevCount + 1);
         setStartTime(null);
+        if(testCount==5){
+          saveTestResults();
+        }
       } else if (!startTime) {
         startTest();
       }
     } else {
       // Save test results when test is completed
-      saveTestResults();
+
 
       // Restart the test
       setWaiting(false);

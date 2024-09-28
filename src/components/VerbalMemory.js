@@ -238,28 +238,23 @@ const VerbalMemory = () => {
             <Typography variant="h6" gutterBottom>Statistics</Typography>
             <img src={statsimg} alt="Statistics" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }} />
           </InfoBox>
-          <InfoBox sx={{minHeight: '400px'}}>
+          <InfoBox sx={{ minHeight: '400px' }}>
             <Typography variant="h6" gutterBottom>About the test</Typography>
             <Typography paragraph>
-              The average person can only remember 7 digit numbers reliably, but it's possible to do much better using mnemonic techniques. Some helpful links are provided below.
+              This test measures how many words you can keep in short-term memory at once.
             </Typography>
-            <Typography component="div">
-              <Link style={{ color: '#7f60d4' }} href="https://en.wikipedia.org/wiki/Katapayadi_system" target="_blank" rel="noopener noreferrer">
-                Katapayadi system
-              </Link>
+            <Typography paragraph>
+              The number of words you need to remember grows continually, until you can't keep them in your head anymore.
             </Typography>
-            <Typography component="div">
-              <Link style={{ color: '#7f60d4' }} href="https://en.wikipedia.org/wiki/Mnemonic_major_system" target="_blank" rel="noopener noreferrer">
-                Mnemonic major system
-              </Link>
+            <Typography paragraph>
+              Go as long as you can. You have 3 strikes until game over.
             </Typography>
-            <Typography component="div">
-              <Link style={{ color: '#7f60d4' }} href="https://en.wikipedia.org/wiki/Dominic_system" target="_blank" rel="noopener noreferrer">
-                Dominic system
-              </Link>
+            <Typography paragraph>
+              Your score is how many turns you lasted.
             </Typography>
           </InfoBox>
         </InfoSection>
+
       </Box>
     </ThemeProvider>
   );

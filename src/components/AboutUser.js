@@ -136,11 +136,32 @@ const AboutUser = () => {
               </Box>
 
               <Box sx={{ margin: 2, display: 'flex', flexDirection: 'column' }}>
-                <Button sx={{ marginBottom: 2 }} variant="outlined" color="primary" onClick={handleLogout}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  fullWidth
+                  sx={{
+                    mt: 2, // Margin top
+                    fontSize: { xs: '0.875rem', sm: '1rem' }, // Responsive font size
+                    padding: { xs: '8px 12px', sm: '10px 16px' } // Responsive padding
+                  }}
+                  onClick={handleLogout}
+                >
                   Logout
                 </Button>
-                <Button variant="contained" color="secondary" onClick={handleDeleteData}>
-                  Delete All Data
+
+                <Button
+                  variant="contained"
+                  color="error"
+                  fullWidth
+                  sx={{
+                    mt: 2,
+                    fontSize: { xs: '0.875rem', sm: '1rem' },
+                    padding: { xs: '8px 12px', sm: '10px 16px' }
+                  }}
+                  onClick={handleDeleteData}
+                >
+                  Delete
                 </Button>
               </Box>
 

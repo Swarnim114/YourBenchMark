@@ -214,105 +214,97 @@ function VisualMemoryTest() {
   return (
     <div style={{ backgroundColor: theme.palette.background.default, }}>
       <ThemeProvider theme={theme} >
-      <Container
-        maxWidth="sm"
-        sx={{
-          backgroundColor: theme.palette.background.default,
-          padding: { xs: '15px', sm: '25px' },
-          textAlign: 'center',
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '40vh',
-          margin: '0 auto',
-        }}
-      >
-        <Typography variant="h4" gutterBottom>
-          Visual Memory Test - Level {level}
-        </Typography>
-
-        <Box sx={{ height: '80px', mb: 2 }}>
-          {message && (
-            <Typography
-              variant="h6"
-              color="secondary"
-              sx={{ mb: 2 }}
-            >
-              {message}
-            </Typography>
-          )}
-
-          {stage === 'start' && (
-            <GameButton variant="contained" color="primary" onClick={startGame}>
-              Start Game
-            </GameButton>
-          )}
-          {stage === 'failed' && (
-            <GameButton variant="contained" color="secondary" onClick={resetGame}>
-              Play Again
-            </GameButton>
-          )}
-        </Box>
-
-        <Box
-          ref={gridContainerRef}
+        <Container
+          maxWidth="sm"
           sx={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
-            gap: { xs: '5px', sm: '10px' },
-            width: '80%',
-            aspectRatio: '1',
+            backgroundColor: theme.palette.background.default,
+            padding: { xs: '15px', sm: '25px' },
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '40vh',
             margin: '0 auto',
-            justifyContent: 'center',
           }}
         >
-          {grid.map((square, index) => (
-            <Box
-              key={index}
-              sx={{
-                aspectRatio: '1',
-                backgroundColor: square ? '#d4eaad' : theme.palette.primary.main,
-                cursor: 'pointer',
-                transition: 'background-color 0.5s ease, transform 0.2s ease',
-                borderRadius: '8px',
-                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                '&:hover': {
-                  backgroundColor: square ? '#888' : theme.palette.primary.light,
-                  transform: 'scale(1.05)',
-                },
-              }}
-              onClick={() => handleSquareClick(index)}
-            />
-          ))}
-        </Box>
-      </Container>
-      <InfoSection  >
-        <InfoBox>
-          <Typography variant="h6" gutterBottom>Statistics</Typography>
-          <img src={statsimg} alt="Statistics" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }} />
-        </InfoBox>
-        <InfoBox sx={{ minHeight: { xs: '200px', sm: '400px' } }}>
-          <Typography variant="h6" gutterBottom>About the test</Typography>
-          <Typography paragraph>
-            The average person can only remember 7 digit numbers reliably, but it's possible to do much better using mnemonic techniques. Some helpful links are provided below.
+          <Typography variant="h4" gutterBottom>
+            Visual Memory Test - Level {level}
           </Typography>
-          <Typography component="div">
-            <Link href="https://en.wikipedia.org/wiki/Katapayadi_system" target="_blank" rel="noopener noreferrer" sx={{ color: 'primary.main' }}>
-              Katapayadi system
-            </Link>
-          </Typography>
-          <Typography component="div">
-            <Link href="https://en.wikipedia.org/wiki/Mnemonic_major_system" target="_blank" rel="noopener noreferrer" sx={{ color: 'primary.main' }}>
-              Mnemonic major system
-            </Link>
-          </Typography>
-          <Typography component="div">
-            <Link href="https://en.wikipedia.org/wiki/Dominic_system" target="_blank" rel="noopener noreferrer" sx={{ color: 'primary.main' }}>
-              Dominic system
-            </Link>
-          </Typography>
-        </InfoBox>
-      </InfoSection>
-    </ThemeProvider>
+
+          <Box sx={{ height: '80px', mb: 2 }}>
+            {message && (
+              <Typography
+                variant="h6"
+                color="secondary"
+                sx={{ mb: 2 }}
+              >
+                {message}
+              </Typography>
+            )}
+
+            {stage === 'start' && (
+              <GameButton variant="contained" color="primary" onClick={startGame}>
+                Start Game
+              </GameButton>
+            )}
+            {stage === 'failed' && (
+              <GameButton variant="contained" color="secondary" onClick={resetGame}>
+                Play Again
+              </GameButton>
+            )}
+          </Box>
+
+          <Box
+            ref={gridContainerRef}
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: `repeat(${gridSize}, 1fr)`,
+              gap: { xs: '5px', sm: '10px' },
+              width: '80%',
+              aspectRatio: '1',
+              margin: '0 auto',
+              justifyContent: 'center',
+            }}
+          >
+            {grid.map((square, index) => (
+              <Box
+                key={index}
+                sx={{
+                  aspectRatio: '1',
+                  backgroundColor: square ? '#d4eaad' : theme.palette.primary.main,
+                  cursor: 'pointer',
+                  transition: 'background-color 0.5s ease, transform 0.2s ease',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+                  '&:hover': {
+                    backgroundColor: square ? '#888' : theme.palette.primary.light,
+                    transform: 'scale(1.05)',
+                  },
+                }}
+                onClick={() => handleSquareClick(index)}
+              />
+            ))}
+          </Box>
+        </Container>
+        <InfoSection>
+          <InfoBox>
+            <Typography variant="h6" gutterBottom>Statistics</Typography>
+            <img src={statsimg} alt="Statistics" style={{ width: '100%', maxWidth: '400px', margin: '0 auto' }} />
+          </InfoBox>
+          <InfoBox sx={{ minHeight: '400px' }}>
+            <Typography variant="h6" gutterBottom>About the test</Typography>
+            <Typography paragraph>
+              Memorize the squares that light up, then press them.
+            </Typography>
+            <Typography paragraph>
+              Every time you finish the pattern, it gets longer.
+            </Typography>
+            <Typography paragraph>
+              Make a mistake, and the test is over.
+            </Typography>
+          </InfoBox>
+        </InfoSection>
+
+      </ThemeProvider>
     </div>
   );
 }

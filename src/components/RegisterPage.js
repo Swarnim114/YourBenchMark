@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Typography, Snackbar, Alert, ThemeProvider, createTheme } from '@mui/material';
+import { TextField, Button, Typography, Box, ThemeProvider, createTheme, Link } from '@mui/material';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 
 const theme = createTheme({
     palette: {
@@ -24,8 +25,7 @@ const RegisterPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
-    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const navigate = useNavigate();
 
     // Use effect to clear form fields on component mount
     useEffect(() => {
@@ -53,34 +53,48 @@ const RegisterPage = () => {
                 throw new Error(errorData.message || 'Registration failed');
             }
 
-            const data = await response.json();
-
             // Show success message in Snackbar
-            setSuccessMessage('Registration successful! Redirecting to login...');
-            setOpenSnackbar(true);
-
-            // Redirect to login page after 2 seconds
-            setTimeout(() => {
-                window.location.href = '/login'; // Assuming you have a login page at /login
-            }, 2000);
+            navigate('/login'); // Redirect to login page after successful registration
 
         } catch (err) {
             setErrorMessage(err.message);
-            setOpenSnackbar(true);
         }
-    };
-
-    // Handle closing of Snackbar
-    const handleCloseSnackbar = () => {
-        setOpenSnackbar(false);
     };
 
     return (
         <ThemeProvider theme={theme}>
-            <div style={{ display: 'grid', placeItems: 'center', height: '60vh' }}>
-                <div style={{ maxWidth: '400px' }}>
-                    <Typography sx={{ color: theme.palette.primary.main }} variant="h3">Register</Typography>
-                    <form onSubmit={handleSubmit} autoComplete="off">
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    minHeight: '100vh',
+                    backgroundColor: theme.palette.background.default,
+                    padding: { xs: 2, sm: 3, md: 4 }
+                }}
+            >
+                <Box
+                    sx={{
+                        width: '100%',
+                        maxWidth: { xs: '100%', sm: '400px' },
+                        p: { xs: 2, sm: 3, md: 4 },
+                        boxShadow: 3,
+                        backgroundColor: theme.palette.background.paper,
+                        borderRadius: 2,
+                    }}
+                >
+                    <Typography
+                        sx={{
+                            color: theme.palette.primary.main,
+                            fontSize: { xs: '1.8rem', sm: '2.2rem', md: '2.5rem' },
+                            textAlign: 'center',
+                            mb: 3
+                        }}
+                        variant="h3"
+                    >
+                        Register
+                    </Typography>
+                    <form onSubmit={handleSubmit}>
                         <TextField
                             label="Name"
                             value={name}
@@ -88,12 +102,6 @@ const RegisterPage = () => {
                             fullWidth
                             margin="normal"
                             autoComplete="new-name"
-                            inputProps={{
-                                autoComplete: 'new-name',
-                                form: {
-                                    autoComplete: 'off',
-                                },
-                            }}
                         />
                         <TextField
                             label="Email"
@@ -103,12 +111,6 @@ const RegisterPage = () => {
                             fullWidth
                             margin="normal"
                             autoComplete="new-email"
-                            inputProps={{
-                                autoComplete: 'new-email',
-                                form: {
-                                    autoComplete: 'off',
-                                },
-                            }}
                         />
                         <TextField
                             label="Password"
@@ -118,37 +120,32 @@ const RegisterPage = () => {
                             fullWidth
                             margin="normal"
                             autoComplete="new-password"
-                            inputProps={{
-                                autoComplete: 'new-password',
-                                form: {
-                                    autoComplete: 'off',
-                                },
-                            }}
                         />
-                        <Button type="submit" variant="contained" color="primary">
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            sx={{ mt: 2, py: 1.5, fontSize: '1rem' }}
+                        >
                             Register
                         </Button>
                     </form>
-
-                    {/* Snackbar for displaying success or error messages */}
-                    <Snackbar
-                        open={openSnackbar}
-                        autoHideDuration={4000}
-                        onClose={handleCloseSnackbar}
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                    >
-                        {errorMessage ? (
-                            <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
-                                {errorMessage}
-                            </Alert>
-                        ) : (
-                            <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
-                                {successMessage}
-                            </Alert>
-                        )}
-                    </Snackbar>
-                </div>
-            </div>
+                    {errorMessage && (
+                        <Typography color="error" sx={{ mt: 2, textAlign: 'center' }}>
+                            {errorMessage}
+                        </Typography>
+                    )}
+                    <Box sx={{ mt: 3, textAlign: 'center' }}>
+                        <Typography variant="body2">
+                            Already a user?{' '}
+                            <Link component={RouterLink} to="/login" color="primary">
+                                Login here
+                            </Link>
+                        </Typography>
+                    </Box>
+                </Box>
+            </Box>
         </ThemeProvider>
     );
 };
