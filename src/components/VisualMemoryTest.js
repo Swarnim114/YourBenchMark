@@ -7,6 +7,7 @@ import incorrectSound from '../assets/sounds/incorrect.mp3';
 import statsimg from "../assets/voilet.png";
 import { infoSectionStyles, infoBoxStyles, gameButtonStyles } from './Theme';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 
 const InfoSection = styled('div')(infoSectionStyles);
@@ -74,7 +75,7 @@ function VisualMemoryTest() {
 
         setUserId(userId);
 
-        const response = await axios.get(`https://yourbenchmark.onrender.com/users/${userId}`);
+        const response = await axios.get(`${API_BASE_URL}/users/${userId}`);
         setTestResults(response.data.testResults);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -85,7 +86,7 @@ function VisualMemoryTest() {
   }, []);
   const saveTestResults = async () => {
     try {
-      const response = await axios.get(`https://yourbenchmark.onrender.com/users/${userId}`);
+      const response = await axios.get(`${API_BASE_URL}/users/${userId}`);
       const userData = response.data;
 
       const currentTestResults = userData.testResults || {
@@ -112,7 +113,7 @@ function VisualMemoryTest() {
         avg: newAvg,
       };
 
-      await axios.patch(`https://yourbenchmark.onrender.com/users/${userId}`, {
+      await axios.patch(`${API_BASE_URL}/users/${userId}`, {
         testResults: currentTestResults,
       });
 

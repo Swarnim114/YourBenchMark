@@ -1,4 +1,5 @@
 const express = require('express');
+const mongoose = require('mongoose');
 const connectDB = require('./config/db');
 const dotenv = require('dotenv');
 const userRoutes = require('./routes/userRoutes');
@@ -11,9 +12,9 @@ const app = express();
 // Connect Database
 connectDB();
 
-// CORS configuration
+// CORS configuration (not needed when frontend and API share an origin behind the Ingress)
 const corsOptions = {
-  origin: 'https://yourbenchmark.vercel.app', // Replace with your frontend's URL
+  origin: process.env.CORS_ORIGIN || 'https://yourbenchmark.vercel.app',
   optionsSuccessStatus: 200
 };
 
@@ -25,10 +26,18 @@ app.use(express.urlencoded({ extended: true }));
 // Define Routes
 app.use('/users', userRoutes);
 
-// Constant PING to keep Render container alive
-// app.get('/ping', (req, res) => {
-//   res.send('pong');
-// });
+// Liveness: the process is up and serving requests
+app.get('/healthz', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
+// Readiness: only take traffic while MongoDB is connected
+app.get('/readyz', (req, res) => {
+  if (mongoose.connection.readyState === 1) {
+    return res.json({ status: 'ready' });
+  }
+  res.status(503).json({ status: 'not ready' });
+});
 
 const PORT = process.env.PORT || 5000;
 

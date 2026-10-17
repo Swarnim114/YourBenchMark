@@ -1,6 +1,7 @@
     import React, { useState } from 'react';
     import { TextField, Button, Typography, Box, ThemeProvider, createTheme, Link } from '@mui/material';
     import { useNavigate, Link as RouterLink } from 'react-router-dom';
+    import { API_BASE_URL } from '../config';
 
     const theme = createTheme({
         palette: {
@@ -17,7 +18,6 @@
         },
     });
 
-    const API_BASE_URL = 'https://yourbenchmark.onrender.com';
 
     const LoginPage = () => {
         const [email, setEmail] = useState('');

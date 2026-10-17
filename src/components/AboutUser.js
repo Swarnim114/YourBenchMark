@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography, Container, Paper, Grid, Button } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const theme = createTheme({
   palette: {
@@ -43,7 +44,7 @@ const AboutUser = () => {
           return;
         }
 
-        const response = await axios.get(`https://yourbenchmark.onrender.com/users/${userId}`);
+        const response = await axios.get(`${API_BASE_URL}/users/${userId}`);
         setUserResults(response.data);
       } catch (error) {
         setError('Error fetching user data: ' + error.message);
@@ -73,7 +74,7 @@ const AboutUser = () => {
       const parsedUser = JSON.parse(storedUser);
       const userId = parsedUser._id;
 
-      const response = await axios.delete(`https://yourbenchmark.onrender.com/users/${userId}`);
+      const response = await axios.delete(`${API_BASE_URL}/users/${userId}`);
 
       if (response.status === 200) {
         localStorage.removeItem('user');

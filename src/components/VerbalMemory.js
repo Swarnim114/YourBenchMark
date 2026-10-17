@@ -5,6 +5,7 @@ import { Link } from '@mui/material';
 import statsimg from "../assets/voilet.png";
 import axios from 'axios';
 import { theme, infoSectionStyles, infoBoxStyles, gameButtonStyles, wordDisplayStyles, scoreDisplayStyles } from './Theme';
+import { API_BASE_URL } from '../config';
 
 const InfoSection = styled('div')(infoSectionStyles);
 const InfoBox = styled('div')(infoBoxStyles);
@@ -56,7 +57,7 @@ const VerbalMemory = () => {
         setUserId(userId);
 
         // Update the URL to point to your backend
-        const response = await axios.get(`https://yourbenchmark.onrender.com/users/${userId}`);
+        const response = await axios.get(`${API_BASE_URL}/users/${userId}`);
         setTestResults(response.data.testResults);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -125,7 +126,7 @@ const VerbalMemory = () => {
 
   const saveTestResults = async () => {
     try {
-      const response = await axios.get(`https://yourbenchmark.onrender.com/users/${userId}`);
+      const response = await axios.get(`${API_BASE_URL}/users/${userId}`);
       const userData = response.data;
 
       // Ensure testResults exists, including all test types
@@ -155,7 +156,7 @@ const VerbalMemory = () => {
       };
 
       // Send updated testResults back to the server
-      await axios.patch(`https://yourbenchmark.onrender.com/users/${userId}`, {
+      await axios.patch(`${API_BASE_URL}/users/${userId}`, {
         testResults: currentTestResults,
       });
 
