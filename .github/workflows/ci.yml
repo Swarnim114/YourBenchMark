@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Backend runtime dependencies must have no high/critical vulnerabilities
+      - name: Audit backend dependencies
+        run: npm audit --omit=dev --audit-level=high
+        working-directory: server
+
+      # Frontend deps are build-time tooling (react-scripts); only static files ship, so report only
+      - name: Audit frontend dependencies (report only)
+        run: npm audit --omit=dev --audit-level=critical || true
+
+      - name: Build images
+        run: |
+          docker build -t ybm-backend:$TAG server
+          docker build -t ybm-frontend:$TAG .
+
+      - name: Scan images
+        run: |
+          for img in ybm-backend ybm-frontend; do
+            docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.56.2 \
+              image --exit-code 1 --severity CRITICAL --ignore-unfixed $img:$TAG
+          done
