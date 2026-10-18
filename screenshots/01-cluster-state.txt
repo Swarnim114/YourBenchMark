@@ -1,0 +1,31 @@
+$ git log --oneline -1
+e5b6b35 Add securityContext and NetworkPolicy
+
+$ kubectl get deploy -o wide
+NAME         READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES                    SELECTOR
+backend      2/2     2            2           19h   backend      ybm-backend:e5b6b35       app=backend
+frontend     1/1     1            1           19h   frontend     ybm-frontend:e5b6b35      app=frontend
+mongo        1/1     1            1           19h   mongo        mongo:7                   app=mongo
+prometheus   1/1     1            1           32m   prometheus   prom/prometheus:v2.55.1   app=prometheus
+
+$ kubectl get pods,svc,pvc,networkpolicy
+NAME                              READY   STATUS    RESTARTS   AGE
+pod/backend-5f57bd6b69-9zpgb      1/1     Running   0          60s
+pod/backend-5f57bd6b69-k8cbm      1/1     Running   0          48s
+pod/frontend-7b7c745954-bd4h2     1/1     Running   0          60s
+pod/mongo-5884b75f-2t6fs          1/1     Running   0          14m
+pod/prometheus-79d8dbb9d6-ckc7m   1/1     Running   0          11m
+
+NAME                   TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)     AGE
+service/backend        ClusterIP   10.96.80.169   <none>        5000/TCP    19h
+service/backend-pods   ClusterIP   None           <none>        5000/TCP    32m
+service/frontend       ClusterIP   10.96.97.136   <none>        8080/TCP    19h
+service/kubernetes     ClusterIP   10.96.0.1      <none>        443/TCP     19h
+service/mongo          ClusterIP   10.96.59.19    <none>        27017/TCP   19h
+service/prometheus     ClusterIP   10.96.39.128   <none>        9090/TCP    32m
+
+NAME                               STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+persistentvolumeclaim/mongo-data   Bound    pvc-658801fc-1a51-4aef-929f-1a7f8e9255f0   1Gi        RWO            standard       <unset>                 19h
+
+NAME                                                  POD-SELECTOR   AGE
+networkpolicy.networking.k8s.io/mongo-allow-backend   app=mongo      14m

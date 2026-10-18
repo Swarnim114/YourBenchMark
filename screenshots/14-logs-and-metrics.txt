@@ -1,0 +1,25 @@
+# Logs: one JSON line per API request (from the browser journey above)
+$ kubectl logs -l app=backend --prefix --tail=20 | grep '{'
+[pod/backend-5f57bd6b69-4n6gt/backend] {"time":"2026-10-18T06:54:40.877Z","method":"POST","route":"/users/register","status":201,"ms":317}
+[pod/backend-5f57bd6b69-4n6gt/backend] {"time":"2026-10-18T06:54:50.662Z","method":"POST","route":"/users/login","status":200,"ms":478}
+[pod/backend-5f57bd6b69-4n6gt/backend] {"time":"2026-10-18T06:54:58.256Z","method":"GET","route":"/users/:id","status":200,"ms":4}
+[pod/backend-5f57bd6b69-4n6gt/backend] {"time":"2026-10-18T06:55:14.274Z","method":"GET","route":"/users/:id","status":304,"ms":5}
+[pod/backend-5f57bd6b69-4n6gt/backend] {"time":"2026-10-18T06:55:41.663Z","method":"PATCH","route":"/users/:id","status":200,"ms":16}
+[pod/backend-5f57bd6b69-jzmfm/backend] {"time":"2026-10-18T06:53:24.191Z","method":"POST","route":"/users/login","status":200,"ms":515}
+[pod/backend-5f57bd6b69-jzmfm/backend] {"time":"2026-10-18T06:54:21.458Z","method":"POST","route":"/users/login","status":200,"ms":486}
+[pod/backend-5f57bd6b69-jzmfm/backend] {"time":"2026-10-18T06:54:21.957Z","method":"POST","route":"/users/login","status":200,"ms":473}
+[pod/backend-5f57bd6b69-jzmfm/backend] {"time":"2026-10-18T06:55:47.876Z","method":"GET","route":"/users/:id","status":200,"ms":5}
+
+# Metrics: raw /metrics from a backend pod (internal only)
+$ kubectl exec deploy/backend -- wget -qO- localhost:5000/metrics | grep http_requests_total
+# HELP http_requests_total Total HTTP requests
+# TYPE http_requests_total counter
+http_requests_total{method="GET",route="/healthz",status="200"} 24
+http_requests_total{method="GET",route="/readyz",status="200"} 19
+http_requests_total{method="GET",route="/metrics",status="200"} 13
+http_requests_total{method="GET",route="/readyz",status="503"} 6
+http_requests_total{method="POST",route="/users/register",status="201"} 1
+http_requests_total{method="POST",route="/users/login",status="200"} 1
+http_requests_total{method="GET",route="/users/:id",status="200"} 1
+http_requests_total{method="GET",route="/users/:id",status="304"} 1
+http_requests_total{method="PATCH",route="/users/:id",status="200"} 1

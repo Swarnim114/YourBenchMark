@@ -1,0 +1,30 @@
+# Release control: rolling update + rollback
+
+$ kubectl rollout history deployment/backend
+3         <none>
+4         <none>
+5         <none>
+
+
+$ kubectl get deploy backend -o jsonpath='{..image}'   # current version
+ybm-backend:e5b6b35
+
+$ kubectl rollout undo deployment/backend
+deployment.apps/backend rolled back
+$ kubectl rollout status deployment/backend
+Waiting for deployment "backend" rollout to finish: 0 out of 2 new replicas have been updated...
+Waiting for deployment "backend" rollout to finish: 1 out of 2 new replicas have been updated...
+Waiting for deployment "backend" rollout to finish: 1 out of 2 new replicas have been updated...
+Waiting for deployment "backend" rollout to finish: 1 out of 2 new replicas have been updated...
+Waiting for deployment "backend" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "backend" rollout to finish: 1 old replicas are pending termination...
+deployment "backend" successfully rolled out
+
+$ kubectl get deploy backend -o jsonpath='{..image}'   # after rollback
+ybm-backend:db3bf95
+
+# Roll forward again with ./deploy.sh
+Deployed version e5b6b35. Open the app with:
+
+$ kubectl get deploy backend -o jsonpath='{..image}'
+ybm-backend:e5b6b35

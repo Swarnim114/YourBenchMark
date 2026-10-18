@@ -1,0 +1,26 @@
+# Fault and recovery: MongoDB goes down
+Symptom to expect: logins fail, backend readiness (/readyz) turns false, liveness stays OK (no restarts).
+
+[before] login HTTP 200 | backend ready: backend-5f57bd6b69-4n6gt=true backend-5f57bd6b69-jzmfm=true 
+
+$ kubectl scale deployment/mongo --replicas=0
+deployment.apps/mongo scaled
+[mongo down +45s] login HTTP 502 | backend ready: backend-5f57bd6b69-4n6gt=false backend-5f57bd6b69-jzmfm=false 
+$ kubectl get endpoints backend
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME      ENDPOINTS   AGE
+backend               19h
+$ kubectl get pods -l app=backend
+NAME                       READY   STATUS    RESTARTS   AGE
+backend-5f57bd6b69-4n6gt   0/1     Running   0          102s
+backend-5f57bd6b69-jzmfm   0/1     Running   0          91s
+
+$ kubectl scale deployment/mongo --replicas=1
+deployment.apps/mongo scaled
+[mongo back] login HTTP 200 | backend ready: backend-5f57bd6b69-4n6gt=true backend-5f57bd6b69-jzmfm=true 
+$ kubectl get pods -l app=backend
+NAME                       READY   STATUS    RESTARTS   AGE
+backend-5f57bd6b69-4n6gt   1/1     Running   0          115s
+backend-5f57bd6b69-jzmfm   1/1     Running   0          104s
+
+Recovery verified: readiness returned to true, logins succeed again, existing user data survived (PVC), and backend pods were never restarted.
