@@ -5,10 +5,22 @@ on:
   pull_request:
 
 jobs:
-  build:
+  # 1. Code quality: fails on ESLint errors, warnings are only shown
+  lint:
     runs-on: ubuntu-latest
-    env:
-      TAG: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx eslint src
+
+  # 2. Dependency security
+  audit:
+    needs: lint
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -20,6 +32,15 @@ jobs:
       # Frontend deps are build-time tooling (react-scripts); only static files ship, so report only
       - name: Audit frontend dependencies (report only)
         run: npm audit --omit=dev --audit-level=critical || true
+
+  # 3. Build images tagged with the commit SHA and scan them
+  build-and-scan:
+    needs: audit
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
 
       - name: Build images
         run: |
