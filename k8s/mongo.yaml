@@ -43,6 +43,13 @@ spec:
           resources:
             requests: { cpu: 100m, memory: 256Mi }
             limits: { cpu: 500m, memory: 512Mi }
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 999 # "mongodb" user in the image
+            allowPrivilegeEscalation: false
+            capabilities: { drop: [ALL] }
+      securityContext:
+        fsGroup: 999 # lets the mongodb user write to the volume
       volumes:
         - name: data
           persistentVolumeClaim:
@@ -57,3 +64,20 @@ spec:
     app: mongo
   ports:
     - port: 27017
+---
+# Only backend pods may connect to MongoDB
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mongo-allow-backend
+spec:
+  podSelector:
+    matchLabels:
+      app: mongo
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: backend
+      ports:
+        - port: 27017

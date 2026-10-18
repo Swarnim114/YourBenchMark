@@ -32,6 +32,11 @@ spec:
           resources:
             requests: { cpu: 50m, memory: 64Mi }
             limits: { cpu: 250m, memory: 256Mi }
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000 # "node" user in the image
+            allowPrivilegeEscalation: false
+            capabilities: { drop: [ALL] }
 ---
 apiVersion: v1
 kind: Service
