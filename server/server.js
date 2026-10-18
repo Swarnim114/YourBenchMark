@@ -4,6 +4,7 @@ const connectDB = require('./config/db');
 const dotenv = require('dotenv');
 const userRoutes = require('./routes/userRoutes');
 const cors = require('cors');
+const { track, metricsHandler } = require('./metrics');
 
 dotenv.config();
 
@@ -19,12 +20,16 @@ const corsOptions = {
 };
 
 // Init Middleware
+app.use(track);
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Define Routes
 app.use('/users', userRoutes);
+
+// Prometheus metrics
+app.get('/metrics', metricsHandler);
 
 // Liveness: the process is up and serving requests
 app.get('/healthz', (req, res) => {

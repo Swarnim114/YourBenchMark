@@ -42,3 +42,14 @@ spec:
     app: backend
   ports:
     - port: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-pods # headless: DNS returns every pod IP so Prometheus scrapes each pod
+spec:
+  clusterIP: None
+  selector:
+    app: backend
+  ports:
+    - port: 5000
