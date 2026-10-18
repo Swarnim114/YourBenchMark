@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TextField, Button, Typography, Box, ThemeProvider, createTheme, Link } from '@mui/material';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 const theme = createTheme({
     palette: {
@@ -17,8 +18,6 @@ const theme = createTheme({
     },
 });
 
-// Hardcoded API base URL
-const API_BASE_URL = 'https://yourbenchmark.onrender.com';
 
 const RegisterPage = () => {
     const [name, setName] = useState('');

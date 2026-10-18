@@ -4,6 +4,7 @@ import { styled, ThemeProvider } from '@mui/material/styles';
 import { theme, infoSectionStyles, infoBoxStyles, gameButtonStyles } from './Theme';
 import statsimg from "../assets/voilet.png";
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 const InfoSection = styled('div')(infoSectionStyles);
 const InfoBox = styled('div')(infoBoxStyles);
@@ -52,7 +53,7 @@ const SequenceMemory = () => {
 
         setUserId(userId);
 
-        const response = await axios.get(`https://yourbenchmark.onrender.com/users/${userId}`);
+        const response = await axios.get(`${API_BASE_URL}/users/${userId}`);
         setTestResults(response.data.testResults);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -63,7 +64,7 @@ const SequenceMemory = () => {
   }, []);
   const saveTestResults = async () => {
     try {
-      const response = await axios.get(`https://yourbenchmark.onrender.com/users/${userId}`);
+      const response = await axios.get(`${API_BASE_URL}/users/${userId}`);
       const userData = response.data;
 
       const currentTestResults = userData.testResults || {
@@ -90,7 +91,7 @@ const SequenceMemory = () => {
         avg: newAvg,
       };
 
-      await axios.patch(`https://yourbenchmark.onrender.com/users/${userId}`, {
+      await axios.patch(`${API_BASE_URL}/users/${userId}`, {
         testResults: currentTestResults,
       });
 

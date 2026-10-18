@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles';
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 import axios from 'axios';
 import { useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 
 
 const Container = styled('div')({
@@ -107,7 +108,7 @@ const ReactionTime = () => {
         const userId = parsedUser._id;
         setUserId(userId);
 
-        const response = await axios.get(`https://yourbenchmark.onrender.com/users/${userId}`);
+        const response = await axios.get(`${API_BASE_URL}/users/${userId}`);
         setTestResults(response.data.testResults);
       } catch (error) {
         console.error('Error fetching user data:', error);
@@ -136,7 +137,7 @@ const ReactionTime = () => {
         avg: newAvg,
       };
 
-      await axios.patch(`https://yourbenchmark.onrender.com/users/${userId}`, {
+      await axios.patch(`${API_BASE_URL}/users/${userId}`, {
         testResults: currentTestResults,
       });
 

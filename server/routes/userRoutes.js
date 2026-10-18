@@ -39,7 +39,7 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ message: 'User not found' });
         }
 
-        if (req.body.password === user.password) {
+        if (await user.checkPassword(String(req.body.password || ''))) {
             // Generate a token
             const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
             res.json({ message: 'Login successful', token, user });

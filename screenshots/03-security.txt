@@ -1,0 +1,24 @@
+# Security: non-root users
+$ kubectl exec deploy/backend -- id
+uid=1000(node) gid=1000(node) groups=1000(node)
+$ kubectl exec deploy/frontend -- id
+uid=101(nginx) gid=101(nginx) groups=101(nginx)
+$ kubectl exec deploy/mongo -- id
+uid=999(mongodb) gid=999(mongodb) groups=999(mongodb)
+$ kubectl exec deploy/prometheus -- id
+uid=65534(nobody) gid=65534(nobody) groups=65534(nobody)
+
+# NetworkPolicy mongo-allow-backend: only backend may reach mongo:27017
+$ kubectl exec deploy/backend -- node -e '<tcp connect mongo:27017>'
+CONNECTED
+$ kubectl exec deploy/frontend -- nc -z -w 4 mongo 27017
+BLOCKED (timeout)
+$ kubectl exec deploy/prometheus -- nc -z -w 4 mongo 27017
+BLOCKED (timeout)
+
+# Secret values are not stored in git; only key names are visible
+$ kubectl describe secret ybm-secrets
+Data
+====
+JWT_SECRET:   64 bytes
+MONGODB_URI:  25 bytes
